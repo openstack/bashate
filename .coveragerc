@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = bash8
+omit = bash8/tests/*,bash8/openstack/*
+
+[report]
+ignore-errors = True

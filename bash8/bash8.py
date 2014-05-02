@@ -102,6 +102,7 @@ def check_indents(line):
         if (len(m.group('indent')) % 4) != 0:
             print_error('E003: Indent not multiple of 4', line)
 
+
 def check_function_decl(line):
     failed = False
     if line.startswith("function"):
@@ -188,6 +189,7 @@ def check_files(files, verbose):
 
         prev_line = logical_line
         prev_lineno = fileinput.filelineno()
+
 
 def get_options():
     parser = argparse.ArgumentParser(

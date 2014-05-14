@@ -66,6 +66,10 @@ def print_error(error, line,
         filelineno = fileinput.filelineno()
     global ERRORS
     ERRORS = ERRORS + 1
+    log_error(error, line, filename, filelineno)
+
+
+def log_error(error, line, filename, filelineno):
     print("%s: '%s'" % (error, line.rstrip('\n')))
     print(" - %s: L%s" % (filename, filelineno))
 

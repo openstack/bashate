@@ -86,7 +86,8 @@ def check_if_then(line):
     if not_continuation(line):
         if re.search('^\s*if \[', line):
             if not re.search(';\s*then(\b|$)', line):
-                print_error('E011: Then non on same line as if', line)
+                print_error('E011: Then keyword is not on same line'
+                            ' as if keyword', line)
 
 
 def check_no_trailing_whitespace(line):

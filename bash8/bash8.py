@@ -163,7 +163,7 @@ def check_files(files, verbose):
             prev_file = fileinput.filename()
 
             if verbose:
-                print "Running bash8 on %s" % fileinput.filename()
+                print("Running bash8 on %s" % fileinput.filename())
 
         # NOTE(sdague): multiline processing of heredocs is interesting
         if not in_multiline:

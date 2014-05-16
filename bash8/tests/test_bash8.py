@@ -19,10 +19,19 @@ test_bash8
 Tests for `bash8` module.
 """
 
+from bash8 import bash8
 from bash8.tests import base
 
 
 class TestBash8(base.TestCase):
 
-    def test_something(self):
-        pass
+    def test_multi_ignore(self):
+        bash8.register_ignores('E001|E011')
+        bash8.check_no_trailing_whitespace("if ")
+        bash8.check_if_then("if ")
+        self.assertEqual(bash8.ERRORS, 0)
+
+    def test_ignore(self):
+        bash8.register_ignores('E001')
+        bash8.check_no_trailing_whitespace("if ")
+        self.assertEqual(bash8.ERRORS, 0)

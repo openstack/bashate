@@ -5,7 +5,7 @@ discover
 fixtures>=0.3.14
 python-subunit
 sphinx>=1.1.2
-oslo.sphinx
+oslosphinx
 testrepository>=0.0.17
 testscenarios>=0.4,<0.5
 testtools>=0.9.32

@@ -58,6 +58,8 @@ def should_ignore(error):
 
 def print_error(error, line,
                 filename=None, filelineno=None):
+    if should_ignore(error):
+        return
     if not filename:
         filename = fileinput.filename()
     if not filelineno:

@@ -25,6 +25,14 @@ from bash8.tests import base
 
 class TestBash8(base.TestCase):
 
+    def setUp(self):
+        super(TestBash8, self).setUp()
+
+        # cleanup global IGNOREs
+        def reset_ignores():
+            bash8.IGNORE = None
+        self.addCleanup(reset_ignores)
+
     def test_multi_ignore(self):
         bash8.register_ignores('E001|E011')
         bash8.check_no_trailing_whitespace("if ")

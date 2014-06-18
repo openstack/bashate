@@ -37,3 +37,4 @@ unrolling that is kind of "interesting"
 - E010: *do* not on the same line as *for*
 - E011: *then* not on the same line as *if*
 - E012: heredoc didn't end before EOF
+- E020: Function declaration not in format ``^function name {$``

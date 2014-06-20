@@ -2,6 +2,6 @@
 Usage
 ========
 
-To use bash8 in a project::
+To use bashate in a project::
 
-	import bash8
+	import bashate

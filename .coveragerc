@@ -1,7 +1,7 @@
 [run]
 branch = True
-source = bash8
-omit = bash8/tests/*,bash8/openstack/*
+source = bashate
+omit = bashate/tests/*,bashate/openstack/*
 
 [report]
 ignore-errors = True

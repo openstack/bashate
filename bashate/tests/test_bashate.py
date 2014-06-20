@@ -13,55 +13,55 @@
 # under the License.
 
 """
-test_bash8
+test_bashate
 ----------------------------------
 
-Tests for `bash8` module.
+Tests for `bashate` module.
 """
 
 import mock
 
-from bash8 import bash8
+from bashate import bashate
 
-from bash8.tests import base
+from bashate.tests import base
 
 
-class TestBash8(base.TestCase):
+class TestBashate(base.TestCase):
 
     def setUp(self):
-        super(TestBash8, self).setUp()
+        super(TestBashate, self).setUp()
 
         # cleanup global IGNOREs
         def reset_ignores():
-            bash8.IGNORE = None
+            bashate.IGNORE = None
         self.addCleanup(reset_ignores)
 
     def test_multi_ignore(self):
-        bash8.register_ignores('E001|E011')
-        bash8.check_no_trailing_whitespace("if ")
-        bash8.check_if_then("if ")
-        self.assertEqual(bash8.ERRORS, 0)
+        bashate.register_ignores('E001|E011')
+        bashate.check_no_trailing_whitespace("if ")
+        bashate.check_if_then("if ")
+        self.assertEqual(bashate.ERRORS, 0)
 
     def test_ignore(self):
-        bash8.register_ignores('E001')
-        bash8.check_no_trailing_whitespace("if ")
-        self.assertEqual(bash8.ERRORS, 0)
+        bashate.register_ignores('E001')
+        bashate.check_no_trailing_whitespace("if ")
+        self.assertEqual(bashate.ERRORS, 0)
 
-    @mock.patch('bash8.bash8.print_error')
+    @mock.patch('bashate.bashate.print_error')
     def test_while_check_for_do(self, m_print_error):
         test_line = 'while `do something args`'
-        bash8.check_for_do(test_line)
+        bashate.check_for_do(test_line)
 
         m_print_error.assert_called_once_with(
             'E010: Do not on same line as while', test_line)
 
 
-class TestBash8Samples(base.TestCase):
-    """End to end regression testing of bash8 against script samples."""
+class TestBashateSamples(base.TestCase):
+    """End to end regression testing of bashate against script samples."""
 
     def setUp(self):
-        super(TestBash8Samples, self).setUp()
-        log_error_patcher = mock.patch('bash8.bash8.log_error')
+        super(TestBashateSamples, self).setUp()
+        log_error_patcher = mock.patch('bashate.bashate.log_error')
         self.m_log_error = log_error_patcher.start()
         self.addCleanup(log_error_patcher.stop)
 
@@ -78,14 +78,14 @@ class TestBash8Samples(base.TestCase):
                       (error, lineno))
 
     def test_sample_E001(self):
-        test_file = 'bash8/tests/samples/E001_bad.sh'
-        bash8.check_files(test_file, False)
+        test_file = 'bashate/tests/samples/E001_bad.sh'
+        bashate.check_files(test_file, False)
 
         self.assert_error_found('E001', 4)
 
     def test_sample_E002(self):
-        test_file = 'bash8/tests/samples/E002_bad.sh'
-        bash8.check_files(test_file, False)
+        test_file = 'bashate/tests/samples/E002_bad.sh'
+        bashate.check_files(test_file, False)
 
         self.assert_error_found('E002', 3)
 
@@ -94,15 +94,15 @@ class TestBash8Samples(base.TestCase):
 
         This is a legacy compatibility check to make sure we still
         catch the same errors as we did before the first 0.1.0
-        release of the bash8 pypi package. There were no tests
+        release of the bashate pypi package. There were no tests
         before this, so it is our baseline regression check.
 
         New checks shouldn't need to be added here, and should
         have their own separate unit test and/or sample file checks.
         """
 
-        test_file = 'bash8/tests/samples/legacy_sample.sh'
-        bash8.check_files(test_file, False)
+        test_file = 'bashate/tests/samples/legacy_sample.sh'
+        bashate.check_files(test_file, False)
 
         # NOTE(mrodden): E012 actually requires iterating more than one
         # file to detect at the moment; this is bug

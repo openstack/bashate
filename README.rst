@@ -1,5 +1,5 @@
 ===============================
-bash8
+bashate
 ===============================
 
 A pep8 equivalent for bash scripts
@@ -10,7 +10,7 @@ projects. It started from humble beginnings in the DevStack project,
 and will continue to evolve over time.
 
 - Free software: Apache license
-- Documentation: http://docs.openstack.org/developer/bash8
+- Documentation: http://docs.openstack.org/developer/bashate
 - Source: http://git.openstack.org/cgit/openstack-dev/bash8
 - Bugs: http://bugs.launchpad.net/bash8
 

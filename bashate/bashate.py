@@ -12,7 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# bash8 - a pep8 equivalent for bash scripts
+# bashate - a pep8 equivalent for bash scripts
 #
 # this program attempts to be an automated style checker for bash scripts
 # to fill the same part of code review that pep8 does in most OpenStack
@@ -170,7 +170,7 @@ def check_files(files, verbose):
             prev_file = fileinput.filename()
 
             if verbose:
-                print("Running bash8 on %s" % fileinput.filename())
+                print("Running bashate on %s" % fileinput.filename())
 
         # NOTE(sdague): multiline processing of heredocs is interesting
         if not in_multiline:
@@ -214,7 +214,7 @@ def main():
     check_files(opts.files, opts.verbose)
 
     if ERRORS > 0:
-        print("%d bash8 error(s) found" % ERRORS)
+        print("%d bashate error(s) found" % ERRORS)
         return 1
     else:
         return 0

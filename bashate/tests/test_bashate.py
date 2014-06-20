@@ -78,14 +78,14 @@ class TestBashateSamples(base.TestCase):
                       (error, lineno))
 
     def test_sample_E001(self):
-        test_file = 'bashate/tests/samples/E001_bad.sh'
-        bashate.check_files(test_file, False)
+        test_files = ['bashate/tests/samples/E001_bad.sh']
+        bashate.check_files(test_files, False)
 
         self.assert_error_found('E001', 4)
 
     def test_sample_E002(self):
-        test_file = 'bashate/tests/samples/E002_bad.sh'
-        bashate.check_files(test_file, False)
+        test_files = ['bashate/tests/samples/E002_bad.sh']
+        bashate.check_files(test_files, False)
 
         self.assert_error_found('E002', 3)
 
@@ -101,8 +101,8 @@ class TestBashateSamples(base.TestCase):
         have their own separate unit test and/or sample file checks.
         """
 
-        test_file = 'bashate/tests/samples/legacy_sample.sh'
-        bashate.check_files(test_file, False)
+        test_files = ['bashate/tests/samples/legacy_sample.sh']
+        bashate.check_files(test_files, False)
 
         # NOTE(mrodden): E012 actually requires iterating more than one
         # file to detect at the moment; this is bug

@@ -150,52 +150,53 @@ def check_files(files, verbose):
     prev_line = ""
     prev_lineno = 0
 
-    for line in fileinput.input(files):
-        if fileinput.isfirstline():
-            # if in_multiline when the new file starts then we didn't
-            # find the end of a heredoc in the last file.
-            if in_multiline:
-                print_error('E012: heredoc did not end before EOF',
-                            multiline_line,
-                            filename=prev_file, filelineno=multiline_start)
-                in_multiline = False
+    for fname in files:
+        for line in fileinput.input(fname):
+            if fileinput.isfirstline():
+                # if in_multiline when the new file starts then we didn't
+                # find the end of a heredoc in the last file.
+                if in_multiline:
+                    print_error('E012: heredoc did not end before EOF',
+                                multiline_line,
+                                filename=prev_file, filelineno=multiline_start)
+                    in_multiline = False
 
-            # last line of a previous file should always end with a
-            # newline
-            if prev_file and not prev_line.endswith('\n'):
-                print_error('E004: file did not end with a newline',
-                            prev_line,
-                            filename=prev_file, filelineno=prev_lineno)
+                # last line of a previous file should always end with a
+                # newline
+                if prev_file and not prev_line.endswith('\n'):
+                    print_error('E004: file did not end with a newline',
+                                prev_line,
+                                filename=prev_file, filelineno=prev_lineno)
 
-            prev_file = fileinput.filename()
+                prev_file = fileinput.filename()
 
-            if verbose:
-                print("Running bashate on %s" % fileinput.filename())
+                if verbose:
+                    print("Running bashate on %s" % fileinput.filename())
 
-        # NOTE(sdague): multiline processing of heredocs is interesting
-        if not in_multiline:
-            logical_line = line
-            token = starts_multiline(line)
-            if token:
-                in_multiline = True
-                multiline_start = fileinput.filelineno()
-                multiline_line = line
-                continue
-        else:
-            logical_line = logical_line + line
-            if not end_of_multiline(line, token):
-                continue
+            # NOTE(sdague): multiline processing of heredocs is interesting
+            if not in_multiline:
+                logical_line = line
+                token = starts_multiline(line)
+                if token:
+                    in_multiline = True
+                    multiline_start = fileinput.filelineno()
+                    multiline_line = line
+                    continue
             else:
-                in_multiline = False
+                logical_line = logical_line + line
+                if not end_of_multiline(line, token):
+                    continue
+                else:
+                    in_multiline = False
 
-        check_no_trailing_whitespace(logical_line)
-        check_indents(logical_line)
-        check_for_do(logical_line)
-        check_if_then(logical_line)
-        check_function_decl(logical_line)
+            check_no_trailing_whitespace(logical_line)
+            check_indents(logical_line)
+            check_for_do(logical_line)
+            check_if_then(logical_line)
+            check_function_decl(logical_line)
 
-        prev_line = logical_line
-        prev_lineno = fileinput.filelineno()
+            prev_line = logical_line
+            prev_lineno = fileinput.filelineno()
 
 
 def get_options():

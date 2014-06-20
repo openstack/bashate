@@ -39,6 +39,8 @@
 
 import argparse
 import fileinput
+import fnmatch
+import os
 import re
 import sys
 
@@ -199,10 +201,35 @@ def check_files(files, verbose):
             prev_lineno = fileinput.filelineno()
 
 
+def discover_files():
+    """Discover likely files if none are passed in on the command line."""
+    files = set()
+    # everything that ends in .sh
+    for root, dirs, filenames in os.walk('.'):
+        for filename in fnmatch.filter(filenames, '*.sh'):
+            files.add(os.path.join(root, filename))
+        # functions and rc files
+        for filename in filenames:
+            if re.search('(^functions|rc$)', filename):
+                files.add(os.path.join(root, filename))
+        # grenade upgrade scripts
+        for filename in filenames:
+            if re.search('^(prep|stop|upgrade)-', filename):
+                files.add(os.path.join(root, filename))
+
+    # devstack specifics (everything in lib that isn't md)
+    for root, dirs, filenames in os.walk('lib'):
+        for filename in filenames:
+            if not re.search('\.md$', filename):
+                files.add(os.path.join(root, filename))
+
+    return sorted(files)
+
+
 def get_options():
     parser = argparse.ArgumentParser(
         description='A bash script style checker')
-    parser.add_argument('files', metavar='file', nargs='+',
+    parser.add_argument('files', metavar='file', nargs='*',
                         help='files to scan for errors')
     parser.add_argument('-i', '--ignore', help='Rules to ignore')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
@@ -212,7 +239,10 @@ def get_options():
 def main():
     opts = get_options()
     register_ignores(opts.ignore)
-    check_files(opts.files, opts.verbose)
+    files = opts.files
+    if not files:
+        files = discover_files()
+    check_files(files, opts.verbose)
 
     if ERRORS > 0:
         print("%d bashate error(s) found" % ERRORS)

@@ -12,31 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# bashate - a pep8 equivalent for bash scripts
-#
-# this program attempts to be an automated style checker for bash scripts
-# to fill the same part of code review that pep8 does in most OpenStack
-# projects. It starts from humble beginnings, and will evolve over time.
-#
-# Currently Supported checks
-#
-# Errors
-# Basic white space errors, for consistent indenting
-# - E001: check that lines do not end with trailing whitespace
-# - E002: ensure that indents are only spaces, and not hard tabs
-# - E003: ensure all indents are a multiple of 4 spaces
-# - E004: file did not end with a newline
-#
-# Structure errors
-#
-# A set of rules that help keep things consistent in control blocks.
-# These are ignored on long lines that have a continuation, because
-# unrolling that is kind of "interesting"
-#
-# - E010: *do* not on the same line as *for*
-# - E011: *then* not on the same line as *if*
-# - E012: heredoc didn't end before EOF
-
 import argparse
 import fileinput
 import fnmatch

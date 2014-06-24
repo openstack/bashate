@@ -31,26 +31,28 @@ class TestBashate(base.TestCase):
     def setUp(self):
         super(TestBashate, self).setUp()
 
-        # cleanup global IGNOREs
-        def reset_ignores():
-            bashate.IGNORE = None
-        self.addCleanup(reset_ignores)
-
     def test_multi_ignore(self):
-        bashate.register_ignores('E001|E011')
-        bashate.check_no_trailing_whitespace("if ")
-        bashate.check_if_then("if ")
-        self.assertEqual(bashate.ERRORS, 0)
+        run = bashate.BashateRun()
+        run.register_ignores('E001|E011')
+
+        bashate.check_no_trailing_whitespace("if ", run)
+        bashate.check_if_then("if ", run)
+
+        self.assertEqual(run.ERRORS, 0)
 
     def test_ignore(self):
-        bashate.register_ignores('E001')
-        bashate.check_no_trailing_whitespace("if ")
-        self.assertEqual(bashate.ERRORS, 0)
+        run = bashate.BashateRun()
+        run.register_ignores('E001')
 
-    @mock.patch('bashate.bashate.print_error')
+        bashate.check_no_trailing_whitespace("if ", run)
+
+        self.assertEqual(run.ERRORS, 0)
+
+    @mock.patch('bashate.bashate.BashateRun.print_error')
     def test_while_check_for_do(self, m_print_error):
+        run = bashate.BashateRun()
         test_line = 'while `do something args`'
-        bashate.check_for_do(test_line)
+        bashate.check_for_do(test_line, run)
 
         m_print_error.assert_called_once_with(
             'E010: Do not on same line as while', test_line)
@@ -61,8 +63,10 @@ class TestBashateSamples(base.TestCase):
 
     def setUp(self):
         super(TestBashateSamples, self).setUp()
-        log_error_patcher = mock.patch('bashate.bashate.log_error')
+        log_error_patcher = mock.patch(
+            'bashate.bashate.BashateRun.log_error')
         self.m_log_error = log_error_patcher.start()
+        self.run = bashate.BashateRun()
         self.addCleanup(log_error_patcher.stop)
 
     def assert_error_found(self, error, lineno):
@@ -79,13 +83,13 @@ class TestBashateSamples(base.TestCase):
 
     def test_sample_E001(self):
         test_files = ['bashate/tests/samples/E001_bad.sh']
-        bashate.check_files(test_files, False)
+        self.run.check_files(test_files, False)
 
         self.assert_error_found('E001', 4)
 
     def test_sample_E002(self):
         test_files = ['bashate/tests/samples/E002_bad.sh']
-        bashate.check_files(test_files, False)
+        self.run.check_files(test_files, False)
 
         self.assert_error_found('E002', 3)
 
@@ -102,7 +106,7 @@ class TestBashateSamples(base.TestCase):
         """
 
         test_files = ['bashate/tests/samples/legacy_sample.sh']
-        bashate.check_files(test_files, False)
+        self.run.check_files(test_files, False)
 
         # NOTE(mrodden): E012 actually requires iterating more than one
         # file to detect at the moment; this is bug

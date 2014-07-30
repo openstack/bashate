@@ -113,7 +113,7 @@ class BashateRun(object):
 
     def log_error(self, error, line, filename, filelineno):
         print("%s: '%s'" % (error, line.rstrip('\n')))
-        print(" - %s: L%s" % (filename, filelineno))
+        print(" - %s : L%s" % (filename, filelineno))
 
     def check_files(self, files, verbose):
         in_multiline = False

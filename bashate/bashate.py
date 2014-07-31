@@ -14,7 +14,6 @@
 
 import argparse
 import fileinput
-import fnmatch
 import os
 import re
 import sys
@@ -185,23 +184,19 @@ class BashateRun(object):
 def discover_files():
     """Discover likely files if none are passed in on the command line."""
     files = set()
-    # everything that ends in .sh
     for root, dirs, filenames in os.walk('.'):
-        for filename in fnmatch.filter(filenames, '*.sh'):
-            files.add(os.path.join(root, filename))
-        # functions and rc files
         for filename in filenames:
-            if re.search('(^functions|rc$)', filename):
-                files.add(os.path.join(root, filename))
-        # grenade upgrade scripts
-        for filename in filenames:
-            if re.search('^(prep|stop|upgrade)-', filename):
-                files.add(os.path.join(root, filename))
+            if (filename.endswith('.sh') or
+                # functions and rc files
+                re.search('(^functions|rc$)', filename) or
+                # grenade upgrade scripts
+                re.search('^(prep|stop|upgrade)-', filename)):
+                    files.add(os.path.join(root, filename))
 
     # devstack specifics (everything in lib that isn't md)
     for root, dirs, filenames in os.walk('lib'):
         for filename in filenames:
-            if not re.search('\.md$', filename):
+            if not filename.endswith('.md'):
                 files.add(os.path.join(root, filename))
 
     return sorted(files)

@@ -187,11 +187,11 @@ def discover_files():
     for root, dirs, filenames in os.walk('.'):
         for filename in filenames:
             if (filename.endswith('.sh') or
-                # functions and rc files
-                re.search('(^functions|rc$)', filename) or
-                # grenade upgrade scripts
-                re.search('^(prep|stop|upgrade)-', filename)):
-                    files.add(os.path.join(root, filename))
+                    # functions and rc files
+                    re.search('(^functions|rc$)', filename) or
+                    # grenade upgrade scripts
+                    re.search('^(prep|stop|upgrade)-', filename)):
+                files.add(os.path.join(root, filename))
 
     # devstack specifics (everything in lib that isn't md)
     for root, dirs, filenames in os.walk('lib'):

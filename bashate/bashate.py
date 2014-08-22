@@ -35,10 +35,10 @@ def check_for_do(line, report):
 
 def check_if_then(line, report):
     if not_continuation(line):
-        if re.search('^\s*if \[', line):
+        if re.search('^\s*(el)?if \[', line):
             if not re.search(';\s*then(\b|$)', line):
                 report.print_error('E011: Then keyword is not on same line '
-                                   'as if keyword', line)
+                                   'as if or elif keyword', line)
 
 
 def check_no_trailing_whitespace(line, report):

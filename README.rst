@@ -45,3 +45,4 @@ Obsolete and deprecated syntax
 Rules to identify obsolete and deprecated syntax that should not be used
 
 - E040: $(COMMAND) preferred over `COMMAND`
+- E041: Usage of $[ for arithmetic is deprecated for $((

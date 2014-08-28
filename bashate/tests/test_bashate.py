@@ -104,6 +104,12 @@ class TestBashateSamples(base.TestCase):
 
         self.assert_error_found('E040', 4)
 
+    def test_sample_E041(self):
+        test_files = ['bashate/tests/samples/E041_bad.sh']
+        self.run.check_files(test_files, False)
+
+        self.assert_error_found('E041', 4)
+
     def test_pre_zero_dot_one_sample_file(self):
         """Test the sample file with all pre 0.1.0 release checks.
 

@@ -90,6 +90,12 @@ def end_of_multiline(line, token):
     return False
 
 
+def check_arithmetic(line, report):
+    if "$[" in line:
+        report.print_error('E041: Arithmetic expansion using $[ '
+                           'is deprecated for $((', line)
+
+
 class BashateRun(object):
 
     def __init__(self):
@@ -182,6 +188,7 @@ class BashateRun(object):
                 check_if_then(logical_line, report)
                 check_function_decl(logical_line, report)
                 check_backticks(logical_line, report)
+                check_arithmetic(logical_line, report)
 
                 prev_line = logical_line
                 prev_lineno = fileinput.filelineno()

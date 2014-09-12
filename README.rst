@@ -11,7 +11,7 @@ and will continue to evolve over time.
 
 - Free software: Apache license
 - Documentation: http://docs.openstack.org/developer/bashate
-- Source: http://git.openstack.org/cgit/openstack-dev/bash8
+- Source: http://git.openstack.org/cgit/openstack-dev/bashate
 - Bugs: http://bugs.launchpad.net/bash8
 
 Currently Supported Checks

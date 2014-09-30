@@ -71,6 +71,11 @@ def check_function_decl(line, report):
                            '"^function name {$"', line)
 
 
+def check_backticks(line, report):
+    if re.search('\`.*`', line):
+        report.print_error('E040: $(COMMAND) preferred over `COMMAND`', line)
+
+
 def starts_multiline(line):
     m = re.search("[^<]<<\s*(?P<token>\w+)", line)
     if m:
@@ -176,6 +181,7 @@ class BashateRun(object):
                 check_for_do(logical_line, report)
                 check_if_then(logical_line, report)
                 check_function_decl(logical_line, report)
+                check_backticks(logical_line, report)
 
                 prev_line = logical_line
                 prev_lineno = fileinput.filelineno()

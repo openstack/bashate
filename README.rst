@@ -38,3 +38,10 @@ unrolling that is kind of "interesting"
 - E011: *then* not on the same line as *if* or *elif*
 - E012: heredoc didn't end before EOF
 - E020: Function declaration not in format ``^function name {$``
+
+Obsolete and deprecated syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Rules to identify obsolete and deprecated syntax that should not be used
+
+- E040: $(COMMAND) preferred over `COMMAND`

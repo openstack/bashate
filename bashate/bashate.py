@@ -37,8 +37,8 @@ def check_if_then(line, report):
     if not_continuation(line):
         if re.search('^\s*if \[', line):
             if not re.search(';\s*then(\b|$)', line):
-                report.print_error('E011: Then keyword is not on same line'
-                                   ' as if keyword', line)
+                report.print_error('E011: Then keyword is not on same line '
+                                   'as if keyword', line)
 
 
 def check_no_trailing_whitespace(line, report):
@@ -68,7 +68,7 @@ def check_function_decl(line, report):
 
     if failed:
         report.print_error('E020: Function declaration not in format '
-                           ' "^function name {$"', line)
+                           '"^function name {$"', line)
 
 
 def starts_multiline(line):

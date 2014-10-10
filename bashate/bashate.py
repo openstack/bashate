@@ -12,10 +12,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from __future__ import absolute_import
+
 import argparse
 import fileinput
 import re
 import sys
+
+from bashate import messages
 
 
 def not_continuation(line):
@@ -34,30 +38,28 @@ def check_for_do(line, report):
                 if re.search('for \([^\(]', line):
                     return
             if not re.search(';\s*do$', line):
-                report.print_error(('E010: Do not on same line as %s' %
-                                    operator), line)
+                report.print_error((messages.E010 % operator), line)
 
 
 def check_if_then(line, report):
     if not_continuation(line):
         if re.search('^\s*(el)?if \[', line):
             if not re.search(';\s*then$', line):
-                report.print_error('E011: Then keyword is not on same line '
-                                   'as if or elif keyword', line)
+                report.print_error(messages.E011, line)
 
 
 def check_no_trailing_whitespace(line, report):
     if re.search('[ \t]+$', line):
-        report.print_error('E001: Trailing Whitespace', line)
+        report.print_error(messages.E001, line)
 
 
 def check_indents(line, report):
     m = re.search('^(?P<indent>[ \t]+)', line)
     if m:
         if re.search('\t', m.group('indent')):
-            report.print_error('E002: Tab indents', line)
+            report.print_error(messages.E002, line)
         if (len(m.group('indent')) % 4) != 0:
-            report.print_error('E003: Indent not multiple of 4', line)
+            report.print_error(messages.E003, line)
 
 
 def check_function_decl(line, report):
@@ -72,8 +74,7 @@ def check_function_decl(line, report):
             failed = True
 
     if failed:
-        report.print_error('E020: Function declaration not in format '
-                           '"^function name {$"', line)
+        report.print_error(messages.E020, line)
 
 
 def starts_multiline(line):
@@ -92,8 +93,7 @@ def end_of_multiline(line, token):
 
 def check_arithmetic(line, report):
     if "$[" in line:
-        report.print_error('E041: Arithmetic expansion using $[ '
-                           'is deprecated for $((', line)
+        report.print_error(messages.E041, line)
 
 
 class BashateRun(object):
@@ -146,7 +146,7 @@ class BashateRun(object):
                     # find the end of a heredoc in the last file.
                     if in_multiline:
                         report.print_error(
-                            'E012: heredoc did not end before EOF',
+                            messages.E012,
                             multiline_line,
                             filename=prev_file,
                             filelineno=multiline_start)
@@ -156,7 +156,7 @@ class BashateRun(object):
                     # newline
                     if prev_file and not prev_line.endswith('\n'):
                         report.print_error(
-                            'E004: file did not end with a newline',
+                            messages.E004,
                             prev_line,
                             filename=prev_file,
                             filelineno=prev_lineno)

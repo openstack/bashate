@@ -20,6 +20,7 @@ Tests for `bashate` module.
 import mock
 
 from bashate import bashate
+from bashate import messages
 from bashate.tests import base
 
 
@@ -63,7 +64,7 @@ class TestBashate(base.TestCase):
         bashate.check_for_do(test_line, self.run)
 
         m_print_error.assert_called_once_with(
-            'E010: Do not on same line as while', test_line)
+            messages.E010 % 'while', test_line)
 
 
 class TestBashateSamples(base.TestCase):

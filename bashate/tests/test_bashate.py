@@ -82,8 +82,7 @@ class TestBashateSamples(base.TestCase):
         for call in self.m_log_error.call_args_list:
             # unwrap args
             args = call[0]
-            if (args[0].startswith(error) and
-                lineno == args[3]):
+            if (args[0].startswith(error) and lineno == args[3]):
                 error_found = True
         if not error_found:
             self.fail('Error %s expected at line %d not found!' %

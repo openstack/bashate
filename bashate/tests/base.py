@@ -22,7 +22,6 @@ _TRUE_VALUES = ('True', 'true', '1', 'yes')
 
 
 class TestCase(testtools.TestCase):
-
     """Test case base class for all unit tests."""
 
     def setUp(self):

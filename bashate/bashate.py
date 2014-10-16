@@ -183,6 +183,27 @@ class BashateRun(object):
                     else:
                         in_multiline = False
 
+                # Don't run any tests on comment lines
+                if logical_line.lstrip().startswith('#'):
+                    prev_line = logical_line
+                    prev_lineno = fileinput.filelineno()
+                    continue
+
+                # Strip trailing comments. From bash:
+                #
+                #   a word beginning with # causes that word and all
+                #   remaining characters on that line to be ignored.
+                #   ...
+                #   A character that, when unquoted, separates
+                #   words. One of the following: | & ; ( ) < > space
+                #   tab
+                #
+                # for simplicity, we strip inline comments by
+                # matching just '<space>#'.
+                ll_split = logical_line.split(' #', 1)
+                if len(ll_split) > 1:
+                    logical_line = ll_split[0].rstrip()
+
                 check_no_trailing_whitespace(logical_line, report)
                 check_indents(logical_line, report)
                 check_for_do(logical_line, report)

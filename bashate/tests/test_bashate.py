@@ -120,6 +120,12 @@ class TestBashateSamples(base.TestCase):
         self.assert_error_found('E010', 14)
         self.assert_error_found('E010', 20)
 
+    def test_sample_comments(self):
+        test_files = ['bashate/tests/samples/comments.sh']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(0, self.run.ERRORS)
+
     def test_pre_zero_dot_one_sample_file(self):
         """Test the sample file with all pre 0.1.0 release checks.
 

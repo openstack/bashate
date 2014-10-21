@@ -28,6 +28,12 @@ def check_for_do(line, report):
         match = re.match('^\s*(for|while|until)\s', line)
         if match:
             operator = match.group(1).strip()
+            if operator == "for":
+                # "for i in ..." and "for ((" is bash, but
+                # "for (" is likely from an embedded awk script,
+                # so skip it
+                if re.search('for \([^\(]', line):
+                    return
             if not re.search(';\s*do(\b|$)', line):
                 report.print_error(('E010: Do not on same line as %s' %
                                     operator), line)

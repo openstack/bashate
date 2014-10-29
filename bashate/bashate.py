@@ -14,7 +14,6 @@
 
 import argparse
 import fileinput
-import os
 import re
 import sys
 
@@ -215,45 +214,29 @@ class BashateRun(object):
                 prev_lineno = fileinput.filelineno()
 
 
-def discover_files():
-    """Discover likely files if none are passed in on the command line."""
-    files = set()
-    for root, dirs, filenames in os.walk('.'):
-        for filename in filenames:
-            if (filename.endswith('.sh') or
-                    # functions and rc files
-                    re.search('(^functions|rc$)', filename) or
-                    # grenade upgrade scripts
-                    re.search('^(prep|stop|upgrade)-', filename)):
-                files.add(os.path.join(root, filename))
+def main():
 
-    # devstack specifics (everything in lib that isn't md)
-    for root, dirs, filenames in os.walk('lib'):
-        for filename in filenames:
-            if not filename.endswith('.md'):
-                files.add(os.path.join(root, filename))
-
-    return sorted(files)
-
-
-def get_options():
     parser = argparse.ArgumentParser(
         description='A bash script style checker')
     parser.add_argument('files', metavar='file', nargs='*',
                         help='files to scan for errors')
     parser.add_argument('-i', '--ignore', help='Rules to ignore')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
-    return parser.parse_args()
+    opts = parser.parse_args()
 
-
-def main():
-    opts = get_options()
-    run = BashateRun()
-    run.register_ignores(opts.ignore)
     files = opts.files
     if not files:
-        files = discover_files()
-    run.check_files(files, opts.verbose)
+        parser.print_usage()
+        return 1
+
+    run = BashateRun()
+    run.register_ignores(opts.ignore)
+
+    try:
+        run.check_files(files, opts.verbose)
+    except IOError as e:
+        print("bashate: %s" % e)
+        return 1
 
     if run.ERRORS > 0:
         print("%d bashate error(s) found" % run.ERRORS)

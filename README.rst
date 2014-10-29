@@ -45,3 +45,8 @@ Obsolete and deprecated syntax
 Rules to identify obsolete and deprecated syntax that should not be used
 
 - E041: Usage of $[ for arithmetic is deprecated for $((
+
+See also
+~~~~~~~~
+
+See also :doc:`/man/bashate`.

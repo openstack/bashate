@@ -49,6 +49,13 @@ add_module_names = True
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
+# Grouping the document tree for man pages.
+# List of tuples 'sourcefile', 'target', u'title', u'Authors name', 'manual'
+man_pages = [
+    ('man/bashate', 'bashate', u'Style checker for bash scripts',
+     [u'OpenStack Foundation'], 1),
+]
+
 # -- Options for HTML output --------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with

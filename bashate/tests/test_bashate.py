@@ -100,6 +100,25 @@ class TestBashateSamples(base.TestCase):
 
         self.assert_error_found('E002', 3)
 
+    def test_sample_E010_good(self):
+        test_files = ['bashate/tests/samples/E010_good.sh']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(self.run.ERRORS, 0)
+
+    def test_sample_E010(self):
+        test_files = ['bashate/tests/samples/E010_bad.sh']
+        self.run.check_files(test_files, False)
+
+        self.assert_error_found('E010', 3)
+        self.assert_error_found('E010', 9)
+
+    def test_sample_E011_good(self):
+        test_files = ['bashate/tests/samples/E011_good.sh']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(self.run.ERRORS, 0)
+
     def test_sample_E011(self):
         test_files = ['bashate/tests/samples/E011_bad.sh']
         self.run.check_files(test_files, False)

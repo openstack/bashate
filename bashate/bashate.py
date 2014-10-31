@@ -33,7 +33,7 @@ def check_for_do(line, report):
                 # so skip it
                 if re.search('for \([^\(]', line):
                     return
-            if not re.search(';\s*do(\b|$)', line):
+            if not re.search(';\s*do$', line):
                 report.print_error(('E010: Do not on same line as %s' %
                                     operator), line)
 
@@ -41,7 +41,7 @@ def check_for_do(line, report):
 def check_if_then(line, report):
     if not_continuation(line):
         if re.search('^\s*(el)?if \[', line):
-            if not re.search(';\s*then(\b|$)', line):
+            if not re.search(';\s*then$', line):
                 report.print_error('E011: Then keyword is not on same line '
                                    'as if or elif keyword', line)
 

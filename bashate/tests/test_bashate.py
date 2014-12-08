@@ -24,6 +24,9 @@ from bashate import messages
 from bashate.tests import base
 
 
+MESSAGES = messages.MESSAGES
+
+
 class TestBashate(base.TestCase):
 
     def setUp(self):
@@ -118,7 +121,7 @@ class TestBashate(base.TestCase):
         bashate.check_for_do(test_line, self.run)
 
         m_print_error.assert_called_once_with(
-            messages.E010 % 'while', test_line)
+            MESSAGES['E010'].msg % 'while', test_line)
 
 
 class TestBashateSamples(base.TestCase):

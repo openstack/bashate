@@ -21,6 +21,8 @@ import sys
 
 from bashate import messages
 
+MESSAGES = messages.MESSAGES
+
 
 def not_continuation(line):
     return not re.search('\\\\$', line)
@@ -38,28 +40,28 @@ def check_for_do(line, report):
                 if re.search('for \([^\(]', line):
                     return
             if not re.search(';\s*do$', line):
-                report.print_error((messages.E010 % operator), line)
+                report.print_error((MESSAGES['E010'].msg % operator), line)
 
 
 def check_if_then(line, report):
     if not_continuation(line):
         if re.search('^\s*(el)?if \[', line):
             if not re.search(';\s*then$', line):
-                report.print_error(messages.E011, line)
+                report.print_error(MESSAGES['E011'].msg, line)
 
 
 def check_no_trailing_whitespace(line, report):
     if re.search('[ \t]+$', line):
-        report.print_error(messages.E001, line)
+        report.print_error(MESSAGES['E001'].msg, line)
 
 
 def check_indents(line, report):
     m = re.search('^(?P<indent>[ \t]+)', line)
     if m:
         if re.search('\t', m.group('indent')):
-            report.print_error(messages.E002, line)
+            report.print_error(MESSAGES['E002'].msg, line)
         if (len(m.group('indent')) % 4) != 0:
-            report.print_error(messages.E003, line)
+            report.print_error(MESSAGES['E003'].msg, line)
 
 
 def check_function_decl(line, report):
@@ -74,7 +76,7 @@ def check_function_decl(line, report):
             failed = True
 
     if failed:
-        report.print_error(messages.E020, line)
+        report.print_error(MESSAGES['E020'].msg, line)
 
 
 def starts_multiline(line):
@@ -88,7 +90,7 @@ def end_of_multiline(line, token):
 
 def check_arithmetic(line, report):
     if "$[" in line:
-        report.print_error(messages.E041, line)
+        report.print_error(MESSAGES['E041'].msg, line)
 
 
 class BashateRun(object):
@@ -160,7 +162,7 @@ class BashateRun(object):
                     # find the end of a heredoc in the last file.
                     if in_multiline:
                         report.print_error(
-                            messages.E012,
+                            MESSAGES['E012'].msg,
                             multiline_line,
                             filename=prev_file,
                             filelineno=multiline_start)
@@ -170,7 +172,7 @@ class BashateRun(object):
                     # newline
                     if prev_file and not prev_line.endswith('\n'):
                         report.print_error(
-                            messages.E004,
+                            MESSAGES['E004'].msg,
                             prev_line,
                             filename=prev_file,
                             filelineno=prev_lineno)
@@ -238,7 +240,12 @@ def main():
     parser.add_argument('-w', '--warn',
                         help='Rules to warn (rather than error)')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
+    parser.add_argument('-s', '--show', action='store_true', default=False)
     opts = parser.parse_args()
+
+    if opts.show is True:
+        messages.print_messages()
+        sys.exit(0)
 
     files = opts.files
     if not files:
@@ -261,8 +268,8 @@ def main():
     if run.ERRORS > 0:
         print("%d bashate error(s) found" % run.ERRORS)
         return 1
-    return 0
 
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

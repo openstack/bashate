@@ -200,6 +200,17 @@ class TestBashateSamples(base.TestCase):
 
         self.assertEqual(0, self.run.ERRORS)
 
+    def test_sample_warning(self):
+        # reuse a couple of the above files to make sure we turn
+        # errors down to warnings if requested
+        test_files = ['bashate/tests/samples/E011_bad.sh',
+                      'bashate/tests/samples/E041_bad.sh']
+        self.run.register_warnings('E011,E041')
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(0, self.run.ERRORS)
+        self.assertEqual(4, self.run.WARNINGS)
+
     def test_pre_zero_dot_one_sample_file(self):
         """Test the sample file with all pre 0.1.0 release checks.
 

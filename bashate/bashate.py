@@ -96,28 +96,47 @@ class BashateRun(object):
     def __init__(self):
         # TODO(mrodden): rename these to match convention
         self.ERRORS = 0
-        self.IGNORE = None
+        self.IGNORE_LIST = None
+        self.WARNINGS = 0
+        self.WARNINGS_LIST = None
 
     def register_ignores(self, ignores):
         if ignores:
-            self.IGNORE = '^(' + '|'.join(ignores.split(',')) + ')'
+            self.IGNORE_LIST = '^(' + '|'.join(ignores.split(',')) + ')'
+
+    def register_warnings(self, warnings):
+        if warnings:
+            self.WARNINGS_LIST = '^(' + '|'.join(warnings.split(',')) + ')'
 
     def should_ignore(self, error):
-        return self.IGNORE and re.search(self.IGNORE, error)
+        return self.IGNORE_LIST and re.search(self.IGNORE_LIST, error)
+
+    def should_warn(self, error):
+        return self.WARNINGS_LIST and re.search(self.WARNINGS_LIST, error)
 
     def print_error(self, error, line,
                     filename=None, filelineno=None):
         if self.should_ignore(error):
             return
+
+        warn = self.should_warn(error)
+
         if not filename:
             filename = fileinput.filename()
         if not filelineno:
             filelineno = fileinput.filelineno()
-        self.ERRORS = self.ERRORS + 1
-        self.log_error(error, line, filename, filelineno)
+        if warn:
+            self.WARNINGS = self.WARNINGS + 1
+        else:
+            self.ERRORS = self.ERRORS + 1
 
-    def log_error(self, error, line, filename, filelineno):
-        print("%s: '%s'" % (error, line.rstrip('\n')))
+        self.log_error(error, line, filename, filelineno, warn)
+
+    def log_error(self, error, line, filename, filelineno, warn=False):
+        print("[%(warn)s] %(error)s: '%(line)s'" %
+              {'warn': "W" if warn else "E",
+               'error': error,
+               'line': line.rstrip('\n')})
         print(" - %s : L%s" % (filename, filelineno))
 
     def check_files(self, files, verbose):
@@ -216,6 +235,8 @@ def main():
     parser.add_argument('files', metavar='file', nargs='*',
                         help='files to scan for errors')
     parser.add_argument('-i', '--ignore', help='Rules to ignore')
+    parser.add_argument('-w', '--warn',
+                        help='Rules to warn (rather than error)')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     opts = parser.parse_args()
 
@@ -226,6 +247,7 @@ def main():
 
     run = BashateRun()
     run.register_ignores(opts.ignore)
+    run.register_warnings(opts.warn)
 
     try:
         run.check_files(files, opts.verbose)
@@ -233,7 +255,10 @@ def main():
         print("bashate: %s" % e)
         return 1
 
-    if run.ERRORS:
+    if run.WARNINGS > 0:
+        print("%d bashate warning(s) found" % run.WARNINGS)
+
+    if run.ERRORS > 0:
         print("%d bashate error(s) found" % run.ERRORS)
         return 1
     return 0

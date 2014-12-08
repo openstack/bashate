@@ -10,6 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import re
+import textwrap
+
 
 class _Message:
     """An individual bashate message.
@@ -26,10 +29,16 @@ class _Message:
     :param long_msg: A longer more involved message, designed for
                      documentation
     """
-    def __init__(self, msg_id, msg_str, long_msg):
+    def __init__(self, msg_id, msg_str, long_msg, default):
         self.msg_id = msg_id
         self.msg_str = msg_str
-        self.long_msg = long_msg
+        # clean-up from """ to a plain string
+        if long_msg:
+            self.long_msg = textwrap.dedent(long_msg)
+            self.long_msg = self.long_msg.strip()
+        else:
+            self.long_msg = None
+        self.default = default
 
     @property
     def msg(self):
@@ -37,55 +46,141 @@ class _Message:
         # that up as .msg property for quick access.
         return "%s: %s" % (self.msg_id, self.msg_str)
 
+
 _messages = {
     'E001': {
         'msg': 'Trailing Whitespace',
-        'long_msg': None
+        'long_msg': None,
+        'default': 'E'
     },
     'E002': {
         'msg': 'Tab indents',
-        'long_msg': None
+        'long_msg':
+        """
+        Spaces are preferred to tabs in source files.
+        """,
+        'default': 'E'
     },
     'E003': {
         'msg': 'Indent not multiple of 4',
-        'long_msg': None
+        'long_msg':
+        """
+        Four spaces should be used to offset logical blocks.
+        """,
+        'default': 'E'
     },
     'E004': {
         'msg': 'File did not end with a newline',
-        'long_msg': None
+        'long_msg':
+        """
+        It is conventional to have a single newline ending files.
+        """,
+        'default': 'E'
+    },
+    'E005': {
+        'msg': 'File does not begin with #! or have .sh prefix',
+        'long_msg':
+        """
+        This can be useful for tools that use either the interpreter
+        directive or the file-exension to select highlighting mode,
+        syntax mode or determine MIME-type, such as file, gerrit and
+        editors.
+        """,
+        'default': 'W'
     },
     'E010': {
         'msg': 'Do not on same line as %s',
-        'long_msg': None
+        'long_msg':
+        """
+        Ensure consistency of "do" directive being on the same line as
+        it's command.  For example:
+
+           for i in $(seq 1 100);
+           do
+              echo "hi"
+           done
+
+        will trigger this error
+        """,
+        'default': 'E'
     },
     'E011': {
         'msg': 'Then keyword is not on same line as if or elif keyword',
-        'long_msg': None
+        'long_msg':
+        """
+        Similar to E010, this ensures consistency of if/elif statements
+        """,
+        'default': 'E'
     },
     'E012': {
         'msg': 'heredoc did not end before EOF',
-        'long_msg': None
+        'long_msg':
+        """
+        This check ensures the closure of heredocs (<<EOF directives).
+        Bash will warn when a heredoc is delimited by end-of-file, but
+        it is easily missed and can cause unexpected issues when a
+        file is sourced.
+        """,
+        'default': 'E'
     },
     'E020': {
         'msg': 'Function declaration not in format ^function name {$',
-        'long_msg': None
+        'long_msg':
+        """
+        There are several equivalent ways to define functions in Bash.
+        This check is for consistency.
+        """,
+        'default': 'E'
     },
     'E041': {
         'msg': 'Arithmetic expansion using $[ is deprecated for $((',
-        'long_msg': None
+        'long_msg':
+        """
+        $[ is deprecated and not explained in the Bash manual.  $((
+        should be used for arithmetic.
+        """,
+        'default': 'E'
     },
 }
 
 MESSAGES = {}
+
+_default_errors = []
+_default_warnings = []
+
 for k, v in _messages.items():
-    MESSAGES[k] = _Message(k, v['msg'], v['long_msg'])
+    MESSAGES[k] = _Message(k, v['msg'], v['long_msg'], v['default'])
+
+    if v['default'] == 'E':
+        _default_errors.append(k)
+    if v['default'] == 'W':
+        _default_warnings.append(k)
+
+# convert this to the regex strings.  This looks a bit weird
+# but it fits the current model of error/warning/ignore checking
+# easily.
+_default_errors = '^(' + '|'.join(_default_errors) + ')'
+_default_warnings = '^(' + '|'.join(_default_warnings) + ')'
+
+
+def is_default_error(error):
+    return re.search(_default_errors, error)
+
+
+def is_default_warning(error):
+    return re.search(_default_warnings, error)
 
 
 def print_messages():
+
     print("\nAvailable bashate checks")
-    print("------------------------")
+    print("------------------------\n")
     for k, v in MESSAGES.items():
-        print(" %(id)s : %(string)s" % {
+        print(" [%(default)s] %(id)s : %(string)s" % {
+            'default': v.default,
             'id': v.msg_id,
             'string': v.msg_str})
-    print("")
+        if v.long_msg:
+            for l in v.long_msg.split('\n'):
+                print("            %s" % l)
+        print("")

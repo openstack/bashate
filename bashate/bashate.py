@@ -93,11 +93,19 @@ def check_arithmetic(line, report):
         report.print_error(MESSAGES['E041'].msg, line)
 
 
+def check_hashbang(line, filename, report):
+    # this check only runs on the first line
+    #  maybe this should check for shell?
+    if not line.startswith("#!") and not filename.endswith(".sh"):
+        report.print_error(MESSAGES['E005'].msg, line)
+
+
 class BashateRun(object):
 
     def __init__(self):
         # TODO(mrodden): rename these to match convention
         self.ERRORS = 0
+        self.ERRORS_LIST = None
         self.IGNORE_LIST = None
         self.WARNINGS = 0
         self.WARNINGS_LIST = None
@@ -110,10 +118,19 @@ class BashateRun(object):
         if warnings:
             self.WARNINGS_LIST = '^(' + '|'.join(warnings.split(',')) + ')'
 
+    def register_errors(self, errors):
+        if errors:
+            self.ERRORS_LIST = '^(' + '|'.join(errors.split(',')) + ')'
+
     def should_ignore(self, error):
         return self.IGNORE_LIST and re.search(self.IGNORE_LIST, error)
 
     def should_warn(self, error):
+        # if in the errors list, overrides warning level
+        if self.ERRORS_LIST and re.search(self.ERRORS_LIST, error):
+            return False
+        if messages.is_default_warning(error):
+            return True
         return self.WARNINGS_LIST and re.search(self.WARNINGS_LIST, error)
 
     def print_error(self, error, line,
@@ -179,6 +196,8 @@ class BashateRun(object):
 
                     prev_file = fileinput.filename()
 
+                    check_hashbang(line, fileinput.filename(), report)
+
                     if verbose:
                         print("Running bashate on %s" % fileinput.filename())
 
@@ -238,7 +257,9 @@ def main():
                         help='files to scan for errors')
     parser.add_argument('-i', '--ignore', help='Rules to ignore')
     parser.add_argument('-w', '--warn',
-                        help='Rules to warn (rather than error)')
+                        help='Rules to always warn (rather than error)')
+    parser.add_argument('-e', '--error',
+                        help='Rules to always error (rather than warn)')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     parser.add_argument('-s', '--show', action='store_true', default=False)
     opts = parser.parse_args()
@@ -255,6 +276,7 @@ def main():
     run = BashateRun()
     run.register_ignores(opts.ignore)
     run.register_warnings(opts.warn)
+    run.register_errors(opts.error)
 
     try:
         run.check_files(files, opts.verbose)

@@ -203,6 +203,13 @@ class TestBashateSamples(base.TestCase):
 
         self.assertEqual(0, self.run.ERRORS)
 
+    def test_sample_E005(self):
+        test_files = ['bashate/tests/samples/E005_bad']
+        self.run.register_errors('E005')
+        self.run.check_files(test_files, False)
+
+        self.assert_error_found('E005', 1)
+
     def test_sample_warning(self):
         # reuse a couple of the above files to make sure we turn
         # errors down to warnings if requested

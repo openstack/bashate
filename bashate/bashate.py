@@ -103,35 +103,34 @@ def check_hashbang(line, filename, report):
 class BashateRun(object):
 
     def __init__(self):
-        # TODO(mrodden): rename these to match convention
-        self.ERRORS = 0
-        self.ERRORS_LIST = None
-        self.IGNORE_LIST = None
-        self.WARNINGS = 0
-        self.WARNINGS_LIST = None
+        self.error_count = 0
+        self.error_list = None
+        self.ignore_list = None
+        self.warning_count = 0
+        self.warning_list = None
 
     def register_ignores(self, ignores):
         if ignores:
-            self.IGNORE_LIST = '^(' + '|'.join(ignores.split(',')) + ')'
+            self.ignore_list = '^(' + '|'.join(ignores.split(',')) + ')'
 
     def register_warnings(self, warnings):
         if warnings:
-            self.WARNINGS_LIST = '^(' + '|'.join(warnings.split(',')) + ')'
+            self.warning_list = '^(' + '|'.join(warnings.split(',')) + ')'
 
     def register_errors(self, errors):
         if errors:
-            self.ERRORS_LIST = '^(' + '|'.join(errors.split(',')) + ')'
+            self.error_list = '^(' + '|'.join(errors.split(',')) + ')'
 
     def should_ignore(self, error):
-        return self.IGNORE_LIST and re.search(self.IGNORE_LIST, error)
+        return self.ignore_list and re.search(self.ignore_list, error)
 
     def should_warn(self, error):
         # if in the errors list, overrides warning level
-        if self.ERRORS_LIST and re.search(self.ERRORS_LIST, error):
+        if self.error_list and re.search(self.error_list, error):
             return False
         if messages.is_default_warning(error):
             return True
-        return self.WARNINGS_LIST and re.search(self.WARNINGS_LIST, error)
+        return self.warning_list and re.search(self.warning_list, error)
 
     def print_error(self, error, line,
                     filename=None, filelineno=None):
@@ -145,9 +144,9 @@ class BashateRun(object):
         if not filelineno:
             filelineno = fileinput.filelineno()
         if warn:
-            self.WARNINGS = self.WARNINGS + 1
+            self.warning_count = self.warning_count + 1
         else:
-            self.ERRORS = self.ERRORS + 1
+            self.error_count = self.error_count + 1
 
         self.log_error(error, line, filename, filelineno, warn)
 
@@ -284,11 +283,11 @@ def main():
         print("bashate: %s" % e)
         return 1
 
-    if run.WARNINGS > 0:
-        print("%d bashate warning(s) found" % run.WARNINGS)
+    if run.warning_count > 0:
+        print("%d bashate warning(s) found" % run.warning_count)
 
-    if run.ERRORS > 0:
-        print("%d bashate error(s) found" % run.ERRORS)
+    if run.error_count > 0:
+        print("%d bashate error(s) found" % run.error_count)
         return 1
 
     return 0

@@ -37,7 +37,7 @@ class TestBashate(base.TestCase):
     @mock.patch('sys.argv')
     def test_main_no_files(self, m_bashaterun, m_argv):
         m_run_obj = mock.MagicMock()
-        m_run_obj.ERRORS = 0
+        m_run_obj.error_count = 0
         m_bashaterun.return_value = m_run_obj
 
         result = bashate.main()
@@ -48,8 +48,8 @@ class TestBashate(base.TestCase):
     @mock.patch('sys.argv')
     def test_main_return_one_on_errors(self, m_bashaterun, m_argv):
         m_run_obj = mock.MagicMock()
-        m_run_obj.WARNINGS = 1
-        m_run_obj.ERRORS = 1
+        m_run_obj.warning_count = 1
+        m_run_obj.error_count = 1
         m_bashaterun.return_value = m_run_obj
 
         result = bashate.main()
@@ -60,7 +60,7 @@ class TestBashate(base.TestCase):
     @mock.patch('sys.argv')
     def test_main_return_one_on_ioerror(self, m_bashaterun, m_argv):
         m_run_obj = mock.MagicMock()
-        m_run_obj.ERRORS = 0
+        m_run_obj.error_count = 0
         m_run_obj.check_files = mock.Mock(side_effect=IOError)
         m_bashaterun.return_value = m_run_obj
 
@@ -73,14 +73,14 @@ class TestBashate(base.TestCase):
         bashate.check_no_trailing_whitespace("if ", self.run)
         bashate.check_if_then("if ", self.run)
 
-        self.assertEqual(0, self.run.ERRORS)
+        self.assertEqual(0, self.run.error_count)
 
     def test_multi_ignore_with_comma(self):
         self.run.register_ignores('E001,E011')
         bashate.check_no_trailing_whitespace("if ", self.run)
         bashate.check_if_then("if ", self.run)
 
-        self.assertEqual(0, self.run.ERRORS)
+        self.assertEqual(0, self.run.error_count)
 
     def test_multi_ignore_mixed(self):
         self.run.register_ignores('E001|E002,E003|E011')
@@ -88,13 +88,13 @@ class TestBashate(base.TestCase):
         bashate.check_if_then("if ", self.run)
         bashate.check_indents("  echo", self.run)
 
-        self.assertEqual(0, self.run.ERRORS)
+        self.assertEqual(0, self.run.error_count)
 
     def test_ignore(self):
         self.run.register_ignores('E001')
         bashate.check_no_trailing_whitespace("if ", self.run)
 
-        self.assertEqual(0, self.run.ERRORS)
+        self.assertEqual(0, self.run.error_count)
 
     @mock.patch('bashate.bashate.BashateRun.print_error')
     def test_while_check_for_do(self, m_print_error):
@@ -143,7 +143,7 @@ class TestBashateSamples(base.TestCase):
         test_files = ['bashate/tests/samples/E010_good.sh']
         self.run.check_files(test_files, False)
 
-        self.assertEqual(self.run.ERRORS, 0)
+        self.assertEqual(self.run.error_count, 0)
 
     def test_sample_E010(self):
         test_files = ['bashate/tests/samples/E010_bad.sh']
@@ -156,7 +156,7 @@ class TestBashateSamples(base.TestCase):
         test_files = ['bashate/tests/samples/E011_good.sh']
         self.run.check_files(test_files, False)
 
-        self.assertEqual(self.run.ERRORS, 0)
+        self.assertEqual(self.run.error_count, 0)
 
     def test_sample_E011(self):
         test_files = ['bashate/tests/samples/E011_bad.sh']
@@ -182,7 +182,7 @@ class TestBashateSamples(base.TestCase):
         test_files = ['bashate/tests/samples/comments.sh']
         self.run.check_files(test_files, False)
 
-        self.assertEqual(0, self.run.ERRORS)
+        self.assertEqual(0, self.run.error_count)
 
     def test_sample_E005(self):
         test_files = ['bashate/tests/samples/E005_bad']
@@ -199,8 +199,8 @@ class TestBashateSamples(base.TestCase):
         self.run.register_warnings('E011,E041')
         self.run.check_files(test_files, False)
 
-        self.assertEqual(0, self.run.ERRORS)
-        self.assertEqual(4, self.run.WARNINGS)
+        self.assertEqual(0, self.run.error_count)
+        self.assertEqual(4, self.run.warning_count)
 
     def test_pre_zero_dot_one_sample_file(self):
         """Test the sample file with all pre 0.1.0 release checks.

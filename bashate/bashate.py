@@ -79,16 +79,11 @@ def check_function_decl(line, report):
 
 def starts_multiline(line):
     m = re.search("[^<]<<\s*(?P<token>\w+)", line)
-    if m:
-        return m.group('token')
-    else:
-        return False
+    return m.group('token') if m else False
 
 
 def end_of_multiline(line, token):
-    if token:
-        return re.search("^%s\s*$" % token, line) is not None
-    return False
+    return token and re.search("^%s\s*$" % token, line)
 
 
 def check_arithmetic(line, report):
@@ -238,11 +233,10 @@ def main():
         print("bashate: %s" % e)
         return 1
 
-    if run.ERRORS > 0:
+    if run.ERRORS:
         print("%d bashate error(s) found" % run.ERRORS)
         return 1
-    else:
-        return 0
+    return 0
 
 
 if __name__ == "__main__":

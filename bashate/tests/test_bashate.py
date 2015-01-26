@@ -30,6 +30,60 @@ class TestBashate(base.TestCase):
         super(TestBashate, self).setUp()
         self.run = bashate.BashateRun()
 
+    @mock.patch('argparse.ArgumentParser')
+    @mock.patch('bashate.bashate.BashateRun')
+    def test_main_no_files(self, m_bashaterun, m_argparser):
+        m_opts = mock.MagicMock()
+        m_opts.files = []
+        m_parser_obj = mock.MagicMock()
+        m_parser_obj.parse_args = mock.Mock(return_value=m_opts)
+        m_argparser.return_value = m_parser_obj
+
+        m_run_obj = mock.MagicMock()
+        m_run_obj.ERRORS = 0
+        m_bashaterun.return_value = m_run_obj
+
+        result = bashate.main()
+
+        m_parser_obj.print_usage.assert_called_once_with()
+        expected_return = 1
+        self.assertEqual(expected_return, result)
+
+    @mock.patch('argparse.ArgumentParser')
+    @mock.patch('bashate.bashate.BashateRun')
+    def test_main_return_one_on_errors(self, m_bashaterun, m_argparser):
+        m_opts = mock.MagicMock()
+        m_opts.files = 'not_a_file'
+        m_parser_obj = mock.MagicMock()
+        m_parser_obj.parse_args = mock.Mock(return_value=m_opts)
+        m_argparser.return_value = m_parser_obj
+
+        m_run_obj = mock.MagicMock()
+        m_run_obj.ERRORS = 1
+        m_bashaterun.return_value = m_run_obj
+
+        result = bashate.main()
+        expected_return = 1
+        self.assertEqual(expected_return, result)
+
+    @mock.patch('argparse.ArgumentParser')
+    @mock.patch('bashate.bashate.BashateRun')
+    def test_main_return_one_on_ioerror(self, m_bashaterun, m_argparser):
+        m_opts = mock.MagicMock()
+        m_opts.files = 'not_a_file'
+        m_parser_obj = mock.MagicMock()
+        m_parser_obj.parse_args = mock.Mock(return_value=m_opts)
+        m_argparser.return_value = m_parser_obj
+
+        m_run_obj = mock.MagicMock()
+        m_run_obj.ERRORS = 0
+        m_run_obj.check_files = mock.Mock(side_effect=IOError)
+        m_bashaterun.return_value = m_run_obj
+
+        result = bashate.main()
+        expected_return = 1
+        self.assertEqual(expected_return, result)
+
     def test_multi_ignore_with_slash(self):
         self.run.register_ignores('E001|E011')
         bashate.check_no_trailing_whitespace("if ", self.run)

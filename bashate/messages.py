@@ -89,7 +89,7 @@ _messages = {
         'default': 'W'
     },
     'E010': {
-        'msg': 'Do not on same line as %s',
+        'msg': 'The "do" should be on same line as %s',
         'long_msg':
         """
         Ensure consistency of "do" directive being on the same line as

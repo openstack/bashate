@@ -62,6 +62,7 @@ class TestBashate(base.TestCase):
         m_argparser.return_value = m_parser_obj
 
         m_run_obj = mock.MagicMock()
+        m_run_obj.WARNINGS = 1
         m_run_obj.ERRORS = 1
         m_bashaterun.return_value = m_run_obj
 

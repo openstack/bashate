@@ -55,6 +55,11 @@ def check_no_trailing_whitespace(line, report):
         report.print_error(MESSAGES['E001'].msg, line)
 
 
+def check_no_long_lines(line, report):
+    if len(line.rstrip("\r\n")) > 79:
+        report.print_error(MESSAGES['E006'].msg, line)
+
+
 def check_indents(line, report):
     m = re.search('^(?P<indent>[ \t]+)', line)
     if m:
@@ -238,6 +243,7 @@ class BashateRun(object):
                     logical_line = ll_split[0].rstrip()
 
                 check_no_trailing_whitespace(logical_line, report)
+                check_no_long_lines(logical_line, report)
                 check_indents(logical_line, report)
                 check_for_do(logical_line, report)
                 check_if_then(logical_line, report)

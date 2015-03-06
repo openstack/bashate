@@ -88,6 +88,19 @@ _messages = {
         """,
         'default': 'W'
     },
+    'E006': {
+        'msg': 'Line too long',
+        'long_msg':
+        """
+        This check mimics the widely accepted convention from PEP8 and
+        many other places that lines longer than 79 columns can not
+        only cause problems when reading/writing code, but also often
+        indicates a bad smell, e.g. too many levels of indentation due
+        to overly complex functions which require refactoring into
+        smaller chunks.
+        """,
+        'default': 'W'
+    },
     'E010': {
         'msg': 'The "do" should be on same line as %s',
         'long_msg':

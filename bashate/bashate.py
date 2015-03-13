@@ -264,7 +264,7 @@ def main():
     parser.add_argument('-s', '--show', action='store_true', default=False)
     opts = parser.parse_args()
 
-    if opts.show is True:
+    if opts.show:
         messages.print_messages()
         sys.exit(0)
 

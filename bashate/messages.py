@@ -14,7 +14,7 @@ import re
 import textwrap
 
 
-class _Message:
+class _Message(object):
     """An individual bashate message.
 
     This should be accessed via the MESSAGES dict keyed by msg_id,

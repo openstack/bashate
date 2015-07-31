@@ -139,6 +139,31 @@ class TestBashateSamples(base.TestCase):
 
         self.assert_error_found('E002', 3)
 
+    def test_sample_E006_bad(self):
+        test_files = ['bashate/tests/samples/E006_bad.sh']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(self.run.warning_count, 3)
+        self.assert_error_found('E006', 5)
+        self.assert_error_found('E006', 6)
+        self.assert_error_found('E006', 8)
+
+    def test_sample_E006_bad_ignore_trailing_ws(self):
+        self.run.register_ignores('E001')
+        test_files = ['bashate/tests/samples/E006_bad.sh']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(self.run.warning_count, 3)
+        self.assert_error_found('E006', 5)
+        self.assert_error_found('E006', 6)
+        self.assert_error_found('E006', 8)
+
+    def test_sample_E006_good(self):
+        test_files = ['bashate/tests/samples/E006_good.sh']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(self.run.warning_count, 0)
+
     def test_sample_E010_good(self):
         test_files = ['bashate/tests/samples/E010_good.sh']
         self.run.check_files(test_files, False)

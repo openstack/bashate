@@ -26,6 +26,7 @@ Basic white space errors, for consistent indenting
 - E002: ensure that indents are only spaces, and not hard tabs
 - E003: ensure all indents are a multiple of 4 spaces
 - E004: file did not end with a newline
+- E006: check for lines longer than 79 columns
 
 Structure Errors
 ~~~~~~~~~~~~~~~~

@@ -4,4 +4,4 @@ source = bashate
 omit = bashate/tests/*,bashate/openstack/*
 
 [report]
-ignore-errors = True
+ignore_errors = True

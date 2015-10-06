@@ -17,6 +17,7 @@ from __future__ import absolute_import
 import argparse
 import fileinput
 import re
+import subprocess
 import sys
 
 from bashate import messages
@@ -111,6 +112,25 @@ def check_hashbang(line, filename, report):
         report.print_error(MESSAGES['E005'].msg, line)
 
 
+def check_syntax(filename, report):
+    # get bash to check the syntax, parse the output for line numbers
+    # and syntax errors to send to the report.
+    syntax_pattern = re.compile('^.*?: line ([0-9]+): (.*)$')
+    proc = subprocess.Popen(
+        ['bash', '-n', filename], stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+    outputs = proc.communicate()
+    if proc.returncode != 0:
+        syntax_errors = [
+            line for line in outputs[1].split('\n') if 'syntax error' in line]
+        for line in syntax_errors:
+            groups = syntax_pattern.match(line).groups()
+            error_message = groups[1]
+            lineno = int(groups[0])
+            msg = '%s: %s' % (MESSAGES['E040'].msg, error_message)
+            report.print_error(msg, filename=filename, filelineno=lineno)
+
+
 class BashateRun(object):
 
     def __init__(self):
@@ -143,7 +163,7 @@ class BashateRun(object):
             return True
         return self.warning_list and re.search(self.warning_list, error)
 
-    def print_error(self, error, line,
+    def print_error(self, error, line='',
                     filename=None, filelineno=None):
         if self.should_ignore(error):
             return
@@ -183,6 +203,10 @@ class BashateRun(object):
         report = self
 
         for fname in files:
+            # simple syntax checking, as files can pass style but still cause
+            # syntax errors when you try to run them.
+            check_syntax(fname, report)
+
             for line in fileinput.input(fname):
                 if fileinput.isfirstline():
                     # if in_multiline when the new file starts then we didn't

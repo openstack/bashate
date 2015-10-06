@@ -145,6 +145,15 @@ _messages = {
         """,
         'default': 'E'
     },
+    'E040': {
+        'msg': 'Syntax error',
+        'long_msg':
+        """
+        `bash -n` determined that there was a syntax error preventing
+        the script from parsing correctly and running.
+        """,
+        'default': 'E'
+    },
     'E041': {
         'msg': 'Arithmetic expansion using $[ is deprecated for $((',
         'long_msg':

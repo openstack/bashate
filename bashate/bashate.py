@@ -98,6 +98,12 @@ def check_arithmetic(line, report):
         report.print_error(MESSAGES['E041'].msg, line)
 
 
+def check_local_subshell(line, report):
+    if line.lstrip().startswith('local ') and \
+       ("=$(" in line or "=`" in line):
+        report.print_error(MESSAGES['E042'].msg, line)
+
+
 def check_hashbang(line, filename, report):
     # this check only runs on the first line
     #  maybe this should check for shell?
@@ -249,6 +255,7 @@ class BashateRun(object):
                 check_if_then(logical_line, report)
                 check_function_decl(logical_line, report)
                 check_arithmetic(logical_line, report)
+                check_local_subshell(logical_line, report)
 
                 prev_line = logical_line
                 prev_lineno = fileinput.filelineno()

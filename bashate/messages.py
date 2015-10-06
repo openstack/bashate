@@ -154,6 +154,16 @@ _messages = {
         """,
         'default': 'E'
     },
+    'E042': {
+        'msg': 'local declaration hides errors',
+        'long_msg':
+        """
+        The return value of "local" is always 0; errors in subshells
+        used for declaration are thus hidden and will not trigger "set -e".
+        """,
+        'default': 'W',
+    },
+
 }
 
 MESSAGES = {}

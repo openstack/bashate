@@ -40,12 +40,14 @@ unrolling that is kind of "interesting"
 - E012: heredoc didn't end before EOF
 - E020: Function declaration not in format ``^function name {$``
 
-Obsolete and deprecated syntax
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Obsolete, deprecated or unsafe syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Rules to identify obsolete and deprecated syntax that should not be used
+Rules to identify obsolete, deprecated or unsafe syntax that should
+not be used
 
 - E041: Usage of $[ for arithmetic is deprecated for $((
+- E042: local declaration hides errors
 
 See also
 ~~~~~~~~

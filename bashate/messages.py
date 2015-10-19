@@ -126,7 +126,7 @@ _messages = {
         'default': 'E'
     },
     'E012': {
-        'msg': 'heredoc did not end before EOF',
+        'msg': 'here-document at line %d delimited by end-of-file',
         'long_msg':
         """
         This check ensures the closure of heredocs (<<EOF directives).

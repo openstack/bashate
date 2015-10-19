@@ -190,6 +190,13 @@ class TestBashateSamples(base.TestCase):
         self.assert_error_found('E011', 3)
         self.assert_error_found('E011', 6)
 
+    def test_sample_E012(self):
+        test_files = ['bashate/tests/samples/E012_bad.sh']
+        self.run.check_files(test_files, False)
+
+        self.assert_error_found('E012', 9)
+        self.assert_error_found('E040', 10)
+
     def test_sample_E041(self):
         test_files = ['bashate/tests/samples/E041_bad.sh']
         self.run.check_files(test_files, False)
@@ -257,8 +264,6 @@ class TestBashateSamples(base.TestCase):
         test_files = ['bashate/tests/samples/legacy_sample.sh']
         self.run.check_files(test_files, False)
 
-        # NOTE(mrodden): E012 actually requires iterating more than one
-        # file to detect at the moment; this is bug
         expected_errors = [
             ('E002', 4),
             ('E003', 6),

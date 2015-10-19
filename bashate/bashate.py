@@ -114,24 +114,54 @@ def check_hashbang(line, filename, report):
 
 
 def check_syntax(filename, report):
-    # get bash to check the syntax, parse the output for line numbers
-    # and syntax errors to send to the report.
-    syntax_pattern = re.compile('^.*?: line ([0-9]+): (.*)$')
+    # run the file through "bash -n" to catch basic syntax errors and
+    # other warnings
+    matches = []
+
+    # sample lines we want to match:
+    # foo.sh: line 4: warning: \
+    #    here-document at line 1 delimited by end-of-file (wanted `EOF')
+    # foo.sh: line 9: syntax error: unexpected end of file
+    # foo.sh: line 7: syntax error near unexpected token `}'
+    #
+    # i.e. consistency with ":"'s isn't constant, so just do our
+    # best...
+    r = re.compile(
+        '^(?P<file>.*): line (?P<lineno>[0-9]+): (?P<error>.*)')
+    # we are parsing the error message, so force it to ignore the
+    # system locale so we don't get messages in another language
     bash_environment = os.environ
     bash_environment['LC_ALL'] = 'C'
     proc = subprocess.Popen(
         ['bash', '-n', filename], stdout=subprocess.PIPE,
         stderr=subprocess.PIPE, env=bash_environment)
     outputs = proc.communicate()
-    if proc.returncode != 0:
-        syntax_errors = [
-            line for line in outputs[1].split('\n') if 'syntax error' in line]
-        for line in syntax_errors:
-            groups = syntax_pattern.match(line).groups()
-            error_message = groups[1]
-            lineno = int(groups[0])
-            msg = '%s: %s' % (MESSAGES['E040'].msg, error_message)
-            report.print_error(msg, filename=filename, filelineno=lineno)
+
+    for line in outputs[1].split('\n'):
+        m = r.match(line)
+        if m:
+            matches.append(m)
+
+    for m in matches:
+        if 'syntax error' in m.group('error'):
+            msg = '%s: %s' % (MESSAGES['E040'].msg, m.group('error'))
+            report.print_error(msg, filename=filename,
+                               filelineno=int(m.group('lineno')))
+
+        # Matching output from bash warning about here-documents not
+        # ending.
+        # FIXME: are there other warnings that might come out
+        # with "bash -n"?  A quick scan of the source code suggests
+        # no, but there might be other interesting things we could
+        # catch.
+        if 'warning:' in m.group('error'):
+            if 'delimited by end-of-file' in m.group('error'):
+                start = re.match('^.*line (?P<start>[0-9]+).*$',
+                                 m.group('error'))
+                report.print_error(
+                    MESSAGES['E012'].msg % int(start.group('start')),
+                    filename=filename,
+                    filelineno=int(m.group('lineno')))
 
 
 class BashateRun(object):
@@ -193,8 +223,6 @@ class BashateRun(object):
 
     def check_files(self, files, verbose):
         in_multiline = False
-        multiline_start = 0
-        multiline_line = ""
         logical_line = ""
         token = False
         prev_file = None
@@ -212,15 +240,6 @@ class BashateRun(object):
 
             for line in fileinput.input(fname):
                 if fileinput.isfirstline():
-                    # if in_multiline when the new file starts then we didn't
-                    # find the end of a heredoc in the last file.
-                    if in_multiline:
-                        report.print_error(
-                            MESSAGES['E012'].msg,
-                            multiline_line,
-                            filename=prev_file,
-                            filelineno=multiline_start)
-                        in_multiline = False
 
                     # last line of a previous file should always end with a
                     # newline
@@ -244,8 +263,6 @@ class BashateRun(object):
                     token = starts_multiline(line)
                     if token:
                         in_multiline = True
-                        multiline_start = fileinput.filelineno()
-                        multiline_line = line
                         continue
                 else:
                     logical_line = logical_line + line

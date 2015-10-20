@@ -249,6 +249,11 @@ class TestBashateSamples(base.TestCase):
         self.assertEqual(0, self.run.error_count)
         self.assertEqual(4, self.run.warning_count)
 
+    def test_ignore_heredoc(self):
+        test_files = ['bashate/tests/samples/heredoc_ignore.sh']
+        self.run.check_files(test_files, False)
+        self.assertEqual(0, self.run.error_count)
+
     def test_pre_zero_dot_one_sample_file(self):
         """Test the sample file with all pre 0.1.0 release checks.
 

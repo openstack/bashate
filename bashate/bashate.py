@@ -87,7 +87,9 @@ def check_function_decl(line, report):
 
 
 def starts_multiline(line):
-    m = re.search("[^<]<<\s*(?P<token>\w+)", line)
+    # note, watch out for <<EOF and <<'EOF' ; quotes in the
+    # deliminator are part of syntax
+    m = re.search("[^<]<<\s*([\'\"]?)(?P<token>\w+)([\'\"]?)", line)
     return m.group('token') if m else False
 
 
@@ -257,7 +259,10 @@ class BashateRun(object):
                     if verbose:
                         print("Running bashate on %s" % fileinput.filename())
 
-                # NOTE(sdague): multiline processing of heredocs is interesting
+                # strip out heredocs, and don't run any checks on
+                # their contents.  These are usually things like yaml
+                # files or other bits and pieces that don't obey our
+                # syntax such as indenting or line-length.
                 if not in_multiline:
                     logical_line = line
                     token = starts_multiline(line)
@@ -270,6 +275,11 @@ class BashateRun(object):
                         continue
                     else:
                         in_multiline = False
+                        # XXX: if we want to do something with
+                        # heredocs in the future, then the whole thing
+                        # is now stored in logical_line.  for now,
+                        # skip
+                        continue
 
                 # Don't run any tests on comment lines
                 if logical_line.lstrip().startswith('#'):

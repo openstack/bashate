@@ -66,7 +66,7 @@ def check_indents(line, report):
     if m:
         if re.search('\t', m.group('indent')):
             report.print_error(MESSAGES['E002'].msg, line)
-        if (len(m.group('indent')) % 4) != 0:
+        elif (len(m.group('indent')) % 4) != 0:
             report.print_error(MESSAGES['E003'].msg, line)
 
 

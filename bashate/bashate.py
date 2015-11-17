@@ -26,12 +26,12 @@ from bashate import messages
 MESSAGES = messages.MESSAGES
 
 
-def not_continuation(line):
-    return not re.search('\\\\$', line)
+def is_continuation(line):
+    return re.search('\\\\\s*$', line)
 
 
 def check_for_do(line, report):
-    if not_continuation(line):
+    if not is_continuation(line):
         match = re.match('^\s*(for|while|until)\s', line)
         if match:
             operator = match.group(1).strip()
@@ -46,7 +46,7 @@ def check_for_do(line, report):
 
 
 def check_if_then(line, report):
-    if not_continuation(line):
+    if not is_continuation(line):
         if re.search('^\s*(el)?if \[', line):
             if not re.search(';\s*then$', line):
                 report.print_error(MESSAGES['E011'].msg, line)
@@ -86,14 +86,14 @@ def check_function_decl(line, report):
         report.print_error(MESSAGES['E020'].msg, line)
 
 
-def starts_multiline(line):
+def starts_heredoc(line):
     # note, watch out for <<EOF and <<'EOF' ; quotes in the
     # deliminator are part of syntax
     m = re.search("[^<]<<\s*([\'\"]?)(?P<token>\w+)([\'\"]?)", line)
     return m.group('token') if m else False
 
 
-def end_of_multiline(line, token):
+def end_of_heredoc(line, token):
     return token and re.search("^%s\s*$" % token, line)
 
 
@@ -224,7 +224,6 @@ class BashateRun(object):
         print(" - %s : L%s" % (filename, filelineno))
 
     def check_files(self, files, verbose):
-        in_multiline = False
         logical_line = ""
         token = False
         prev_file = None
@@ -236,6 +235,11 @@ class BashateRun(object):
         report = self
 
         for fname in files:
+
+            # reset world
+            in_heredoc = False
+            in_continuation = False
+
             # simple syntax checking, as files can pass style but still cause
             # syntax errors when you try to run them.
             check_syntax(fname, report)
@@ -259,31 +263,11 @@ class BashateRun(object):
                     if verbose:
                         print("Running bashate on %s" % fileinput.filename())
 
-                # strip out heredocs, and don't run any checks on
-                # their contents.  These are usually things like yaml
-                # files or other bits and pieces that don't obey our
-                # syntax such as indenting or line-length.
-                if not in_multiline:
-                    logical_line = line
-                    token = starts_multiline(line)
-                    if token:
-                        in_multiline = True
-                        continue
-                else:
-                    logical_line = logical_line + line
-                    if not end_of_multiline(line, token):
-                        continue
-                    else:
-                        in_multiline = False
-                        # XXX: if we want to do something with
-                        # heredocs in the future, then the whole thing
-                        # is now stored in logical_line.  for now,
-                        # skip
-                        continue
-
-                # Don't run any tests on comment lines
-                if logical_line.lstrip().startswith('#'):
-                    prev_line = logical_line
+                # Don't run any tests on comment lines (but remember
+                # inside a heredoc this might be part of the syntax of
+                # an embedded script, just ignore that)
+                if line.lstrip().startswith('#') and not in_heredoc:
+                    prev_line = line
                     prev_lineno = fileinput.filelineno()
                     continue
 
@@ -298,20 +282,65 @@ class BashateRun(object):
                 #
                 # for simplicity, we strip inline comments by
                 # matching just '<space>#'.
-                ll_split = logical_line.split(' #', 1)
-                if len(ll_split) > 1:
-                    logical_line = ll_split[0].rstrip()
+                if not in_heredoc:
+                    ll_split = line.split(' #', 1)
+                    if len(ll_split) > 1:
+                        line = ll_split[0].rstrip()
 
-                check_no_trailing_whitespace(logical_line, report)
-                check_no_long_lines(logical_line, report)
-                check_indents(logical_line, report)
-                check_for_do(logical_line, report)
-                check_if_then(logical_line, report)
-                check_function_decl(logical_line, report)
-                check_arithmetic(logical_line, report)
-                check_local_subshell(logical_line, report)
+                # see if this starts a heredoc
+                if not in_heredoc:
+                    token = starts_heredoc(line)
+                    if token:
+                        in_heredoc = True
+                        logical_line = [line]
+                        continue
 
-                prev_line = logical_line
+                # see if this starts a continuation
+                if not in_continuation:
+                    if is_continuation(line):
+                        in_continuation = True
+                        logical_line = [line]
+                        continue
+
+                # if we are in a heredoc or continuation, just loop
+                # back and keep buffering the lines into
+                # "logical_line" until the end of the
+                # heredoc/continuation.
+                if in_heredoc:
+                    logical_line.append(line)
+                    if not end_of_heredoc(line, token):
+                        continue
+                    else:
+                        in_heredoc = False
+                        # FIXME: if we want to do something with
+                        # heredocs in the future, then the whole thing
+                        # is now stored in logical_line.  for now,
+                        # skip
+                        continue
+                elif in_continuation:
+                    logical_line.append(line)
+                    if is_continuation(line):
+                        continue
+                    else:
+                        in_continuation = False
+                else:
+                    logical_line = [line]
+
+                # at this point, logical_line is an array that holds
+                # the whole continuation.  XXX : historically, we've
+                # just handled every line in a continuation
+                # separatley.  Stick with what works...
+                for line in logical_line:
+                    check_no_trailing_whitespace(line, report)
+                    check_no_long_lines(line, report)
+                    check_indents(line, report)
+                    check_for_do(line, report)
+                    check_if_then(line, report)
+                    check_function_decl(line, report)
+                    check_arithmetic(line, report)
+                    check_local_subshell(line, report)
+
+                prev_line = line
                 prev_lineno = fileinput.filelineno()
 
 

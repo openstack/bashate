@@ -62,13 +62,43 @@ def check_no_long_lines(line, report):
         report.print_error(MESSAGES['E006'].msg, line)
 
 
-def check_indents(line, report):
-    m = re.search('^(?P<indent>[ \t]+)', line)
+def check_indents(logical_line, report):
+    # this is rather complex to handle argument offset indenting;
+    # primarily done by emacs.  If there is an argument, it will try
+    # to line up the following arguments underneath it, e.g.
+    #   foobar_cmd bar baz \
+    #              moo boo
+    # Thus the offset in this case might not be a strict multiple of 4
+
+    # Find the offset of the first argument of the command (if it has
+    # one)
+    m = re.search('^(?P<indent>[ \t]+)?(?P<cmd>\S+)(?P<ws>\s+)(?P<arg>\S+)',
+                  logical_line[0])
+    arg_offset = None
     if m:
-        if re.search('\t', m.group('indent')):
-            report.print_error(MESSAGES['E002'].msg, line)
-        elif (len(m.group('indent')) % 4) != 0:
-            report.print_error(MESSAGES['E003'].msg, line)
+        arg_offset = len(m.group('indent')) if m.group('indent') else 0
+        arg_offset += len(m.group('cmd')) + len(m.group('ws'))
+
+    # go through each line
+    for lineno, line in enumerate(logical_line):
+        m = re.search('^(?P<indent>[ \t]+)', line)
+        if m:
+            # no tabs, only spaces
+            if re.search('\t', m.group('indent')):
+                report.print_error(MESSAGES['E002'].msg, line)
+
+            offset = len(m.group('indent'))
+
+            # the first line and lines without an argument should be
+            # offset by 4 spaces
+            if (lineno == 0) or (arg_offset is None):
+                if (offset % 4) != 0:
+                    report.print_error(MESSAGES['E003'].msg, line)
+            else:
+                # other lines are allowed to line up with the first
+                # argument, or be multiple-of 4 spaces
+                if offset != arg_offset and (offset % 4) != 0:
+                    report.print_error(MESSAGES['E003'].msg, line)
 
 
 def check_function_decl(line, report):
@@ -326,6 +356,8 @@ class BashateRun(object):
                 else:
                     logical_line = [line]
 
+                check_indents(logical_line, report)
+
                 # at this point, logical_line is an array that holds
                 # the whole continuation.  XXX : historically, we've
                 # just handled every line in a continuation
@@ -333,7 +365,6 @@ class BashateRun(object):
                 for line in logical_line:
                     check_no_trailing_whitespace(line, report)
                     check_no_long_lines(line, report)
-                    check_indents(line, report)
                     check_for_do(line, report)
                     check_if_then(line, report)
                     check_function_decl(line, report)

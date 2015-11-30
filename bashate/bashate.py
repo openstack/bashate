@@ -133,8 +133,10 @@ def check_arithmetic(line, report):
 
 
 def check_local_subshell(line, report):
+    # XXX: should we increase the string checking to see if the $( is
+    # anywhere with a string being set?  Risk of false positives?x
     if line.lstrip().startswith('local ') and \
-       ("=$(" in line or "=`" in line):
+       any(s in line for s in ('=$(', '=`', '="$(', '="`')):
         report.print_error(MESSAGES['E042'].msg, line)
 
 

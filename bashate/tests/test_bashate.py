@@ -222,6 +222,8 @@ class TestBashateSamples(base.TestCase):
 
         self.assert_error_found('E042', 2)
         self.assert_error_found('E042', 6)
+        self.assert_error_found('E042', 10)
+        self.assert_error_found('E042', 11)
 
     def test_sample_for_loops(self):
         test_files = ['bashate/tests/samples/for_loops.sh']

@@ -49,6 +49,7 @@ not be used
 - E040: Syntax errors reported by `bash -n`
 - E041: Usage of $[ for arithmetic is deprecated for $((
 - E042: local declaration hides errors
+- E043: arithmetic compound has inconsistent return semantics
 
 See also
 ~~~~~~~~

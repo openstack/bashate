@@ -172,6 +172,20 @@ _messages = {
         """,
         'default': 'W',
     },
+    'E043': {
+        'msg': 'Arithmetic compound has inconsistent return semantics',
+        'long_msg':
+        """
+        The return value of ((expr)) is 1 if "expr" evalues to zero,
+        otherwise 0.  Combined with "set -e", this can be quite
+        confusing when something like ((counter++)) evaluates to zero,
+        making the arithmetic evaluation return 1 and triggering the
+        an error failure.  It is therefore best to use assignment with
+        the $(( operator.
+        """,
+        'default': 'W',
+    },
+
 
 }
 

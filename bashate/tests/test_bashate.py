@@ -225,6 +225,13 @@ class TestBashateSamples(base.TestCase):
         self.assert_error_found('E042', 10)
         self.assert_error_found('E042', 11)
 
+    def test_sample_E043(self):
+        test_files = ['bashate/tests/samples/E043_bad.sh']
+        self.run.register_errors('E043')
+        self.run.check_files(test_files, False)
+
+        self.assert_error_found('E043', 6)
+
     def test_sample_for_loops(self):
         test_files = ['bashate/tests/samples/for_loops.sh']
         self.run.check_files(test_files, False)

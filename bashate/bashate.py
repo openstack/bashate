@@ -132,6 +132,11 @@ def check_arithmetic(line, report):
         report.print_error(MESSAGES['E041'].msg, line)
 
 
+def check_bare_arithmetic(line, report):
+    if line.lstrip().startswith("(("):
+        report.print_error(MESSAGES['E043'].msg, line)
+
+
 def check_local_subshell(line, report):
     # XXX: should we increase the string checking to see if the $( is
     # anywhere with a string being set?  Risk of false positives?x
@@ -372,6 +377,7 @@ class BashateRun(object):
                     check_function_decl(line, report)
                     check_arithmetic(line, report)
                     check_local_subshell(line, report)
+                    check_bare_arithmetic(line, report)
 
                 prev_line = line
                 prev_lineno = fileinput.filelineno()

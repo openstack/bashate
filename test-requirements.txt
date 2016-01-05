@@ -2,15 +2,15 @@
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
 
-hacking>=0.10.0,<0.11
-mock>=1.0
+hacking<0.11,>=0.10.0
+mock>=1.2
 
 coverage>=3.6
 discover
-fixtures>=0.3.14
-python-subunit
-sphinx>=1.1.2
-oslosphinx
-testrepository>=0.0.17
-testscenarios>=0.4,<0.5
-testtools>=0.9.32
+fixtures>=1.3.1
+python-subunit>=0.0.18
+sphinx!=1.2.0,!=1.3b1,<1.3,>=1.1.2
+oslosphinx!=3.4.0,>=2.5.0 # Apache-2.0
+testrepository>=0.0.18
+testscenarios>=0.4
+testtools>=1.4.0

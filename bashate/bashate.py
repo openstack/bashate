@@ -16,6 +16,7 @@ from __future__ import absolute_import
 
 import argparse
 import fileinput
+import os
 import re
 import subprocess
 import sys
@@ -116,9 +117,11 @@ def check_syntax(filename, report):
     # get bash to check the syntax, parse the output for line numbers
     # and syntax errors to send to the report.
     syntax_pattern = re.compile('^.*?: line ([0-9]+): (.*)$')
+    bash_environment = os.environ
+    bash_environment['LC_ALL'] = 'C'
     proc = subprocess.Popen(
         ['bash', '-n', filename], stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+        stderr=subprocess.PIPE, env=bash_environment)
     outputs = proc.communicate()
     if proc.returncode != 0:
         syntax_errors = [

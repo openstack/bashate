@@ -3,5 +3,4 @@
 # process, which may cause wedges in the gate later.
 
 pbr>=1.6
-argparse
 Babel>=1.3

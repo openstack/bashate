@@ -263,9 +263,6 @@ class BashateRun(object):
     def check_files(self, files, verbose):
         logical_line = ""
         token = False
-        prev_file = None
-        prev_line = ""
-        prev_lineno = 0
 
         # NOTE(mrodden): magic; replace with proper
         # report class when necessary
@@ -284,17 +281,6 @@ class BashateRun(object):
             for line in fileinput.input(fname):
                 if fileinput.isfirstline():
 
-                    # last line of a previous file should always end with a
-                    # newline
-                    if prev_file and not prev_line.endswith('\n'):
-                        report.print_error(
-                            MESSAGES['E004'].msg,
-                            prev_line,
-                            filename=prev_file,
-                            filelineno=prev_lineno)
-
-                    prev_file = fileinput.filename()
-
                     check_hashbang(line, fileinput.filename(), report)
 
                     if verbose:
@@ -304,8 +290,6 @@ class BashateRun(object):
                 # inside a heredoc this might be part of the syntax of
                 # an embedded script, just ignore that)
                 if line.lstrip().startswith('#') and not in_heredoc:
-                    prev_line = line
-                    prev_lineno = fileinput.filelineno()
                     continue
 
                 # Strip trailing comments. From bash:
@@ -379,8 +363,11 @@ class BashateRun(object):
                     check_local_subshell(line, report)
                     check_bare_arithmetic(line, report)
 
-                prev_line = line
-                prev_lineno = fileinput.filelineno()
+        # finished processing the file
+
+        # last line should always end with a newline
+        if not line.endswith('\n'):
+            report.print_error(MESSAGES['E004'].msg, line)
 
 
 def main():

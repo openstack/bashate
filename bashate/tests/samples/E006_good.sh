@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# no lines longer than 79 columns
+# Allow lines 79 columns or shorter
 
 : 34567890123456789012345678901234567890123456789012345678901234567890123456789
 :        1         2         3         4         5         6         7
+
+# and make sure we allow continuation lines >= 80 columns which are comprised
+# of physical lines which are all <= 79 columns.
+echo 678901234567890123456789012345678901234567890123456789012345678901234567 \
+    567890123456789012345678901234567890123456789012345678901234567890123456789

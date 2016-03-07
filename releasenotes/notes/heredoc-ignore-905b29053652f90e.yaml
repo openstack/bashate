@@ -1,0 +1,28 @@
+---
+fixes:
+
+  - Ignore contents of ``heredoc`` values.  ``heredocs`` usually
+    contain content in a foreign syntax so ``bashate`` will no longer
+    consider them.
+
+  - Continuation lines are now parsed into an array, rather than a
+    single logical-line.  This fixes continuation lines being
+    incorrectly reported as too long.
+
+  - |
+    Indentation now allows emacs-formatted idents, where continuation
+    lines for long commands align to the first argument above (rather
+    than a strict modulo of 4).  e.g.
+
+    ::
+
+       longcommand arg1 arg2 arg3 \
+                   arg4 arg5
+
+    will no longer trigger a bad indent warning.
+
+  - Use ``bash -n`` to detect unclosed heredocs, rather than construct
+    our own parsing.
+
+  - Correctly check for newlines at the end of all files; even if you
+    only specify one file to check.

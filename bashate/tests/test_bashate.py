@@ -257,6 +257,12 @@ class TestBashateSamples(base.TestCase):
 
         self.assert_error_found('E005', 1)
 
+    def test_sample_E005_excluded(self):
+        test_files = ['bashate/tests/samples/.E005_excluded']
+        self.run.check_files(test_files, False)
+
+        self.assertEqual(0, self.run.error_count)
+
     def test_sample_E040(self):
         test_files = ['bashate/tests/samples/E040_syntax_error.sh']
         self.run.register_errors('E040')

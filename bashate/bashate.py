@@ -173,7 +173,8 @@ def check_syntax(filename, report):
     bash_environment['LC_ALL'] = 'C'
     proc = subprocess.Popen(
         ['bash', '-n', filename], stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE, env=bash_environment)
+        stderr=subprocess.PIPE, env=bash_environment,
+        universal_newlines=True)
     outputs = proc.communicate()
 
     for line in outputs[1].split('\n'):

@@ -365,11 +365,11 @@ class BashateRun(object):
                     check_local_subshell(line, report)
                     check_bare_arithmetic(line, report)
 
-        # finished processing the file
+            # last line should always end with a newline
+            if not line.endswith('\n'):
+                report.print_error(MESSAGES['E004'].msg, line)
 
-        # last line should always end with a newline
-        if not line.endswith('\n'):
-            report.print_error(MESSAGES['E004'].msg, line)
+        # finished processing the file
 
 
 def main():

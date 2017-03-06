@@ -23,7 +23,9 @@ OPTIONS
 
 --help, -h        Print help
 --verbose, -v     Verbose output
---ignore, -I      Tests to ignore, comma separated
+--ignore, -i      Tests to ignore, comma separated
+--error, -e       Tests to trigger errors instead of warnings, comma separated
+--warn, -w        Tests to trigger warnings instead of errors, comma separated
 
 EXAMPLES
 ========

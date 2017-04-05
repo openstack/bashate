@@ -36,7 +36,7 @@ Run all tests on a single file::
 
 Run tests on several files, while also ignoring several errors::
 
-    bashate -I E010,E011 file.sh file2.sh
+    bashate -i E010,E011 file.sh file2.sh
 
 BUGS
 ====

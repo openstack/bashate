@@ -38,7 +38,7 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'oslosphinx',
+    'openstackdocstheme',
     'reno.sphinxext',
 ]
 
@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Bashate Release Notes'
-copyright = u'2015, Bashate Developers'
+copyright = u'2017, Bashate Developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -108,12 +108,16 @@ pygments_style = 'sphinx'
 # If true, keep warnings as "system message" paragraphs in the built documents.
 # keep_warnings = False
 
+# openstackdocstheme options
+repository_name = 'openstack-dev/bashate'
+bug_project = 'bashate'
+bug_tag = ''
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'openstackdocs'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -152,6 +156,7 @@ html_theme = 'default'
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 # html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.

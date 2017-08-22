@@ -34,37 +34,38 @@ class TestBashate(base.TestCase):
         self.run = bashate.BashateRun()
 
     @mock.patch('bashate.bashate.BashateRun')
-    @mock.patch('sys.argv')
-    def test_main_no_files(self, m_bashaterun, m_argv):
+    def test_main_no_files(self, m_bashaterun):
         m_run_obj = mock.MagicMock()
         m_run_obj.error_count = 0
+        m_run_obj.warning_count = 0
         m_bashaterun.return_value = m_run_obj
 
-        result = bashate.main()
+        result = bashate.main([])
         expected_return = 1
         self.assertEqual(expected_return, result)
 
     @mock.patch('bashate.bashate.BashateRun')
-    @mock.patch('sys.argv')
-    def test_main_return_one_on_errors(self, m_bashaterun, m_argv):
+    def test_main_return_one_on_errors(self, m_bashaterun):
         m_run_obj = mock.MagicMock()
         m_run_obj.warning_count = 1
         m_run_obj.error_count = 1
         m_bashaterun.return_value = m_run_obj
 
-        result = bashate.main()
+        result = bashate.main([])
         expected_return = 1
         self.assertEqual(expected_return, result)
 
     @mock.patch('bashate.bashate.BashateRun')
-    @mock.patch('sys.argv')
-    def test_main_return_one_on_ioerror(self, m_bashaterun, m_argv):
+    def test_main_return_one_on_ioerror(self, m_bashaterun):
         m_run_obj = mock.MagicMock()
         m_run_obj.error_count = 0
         m_run_obj.check_files = mock.Mock(side_effect=IOError)
         m_bashaterun.return_value = m_run_obj
 
-        result = bashate.main()
+        result = bashate.main(['--verbose',
+                               '/path/to/fileA', '/path/to/fileB'])
+        m_run_obj.check_files.assert_called_with(['/path/to/fileA',
+                                                  '/path/to/fileB'], True)
         expected_return = 1
         self.assertEqual(expected_return, result)
 

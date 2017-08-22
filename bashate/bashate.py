@@ -372,7 +372,10 @@ class BashateRun(object):
             report.print_error(MESSAGES['E004'].msg, line)
 
 
-def main():
+def main(args=None):
+
+    if args is None:
+        args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(
         description='A bash script style checker')
@@ -385,7 +388,7 @@ def main():
                         help='Rules to always error (rather than warn)')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     parser.add_argument('-s', '--show', action='store_true', default=False)
-    opts = parser.parse_args()
+    opts = parser.parse_args(args)
 
     if opts.show:
         messages.print_messages()

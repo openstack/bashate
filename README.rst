@@ -51,6 +51,7 @@ not be used
 - E041: Usage of $[ for arithmetic is deprecated for $((
 - E042: local declaration hides errors
 - E043: arithmetic compound has inconsistent return semantics
+- E044: Use [[ for =~,<,> comparisions
 
 See also
 ~~~~~~~~

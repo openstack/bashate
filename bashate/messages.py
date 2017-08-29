@@ -185,8 +185,16 @@ _messages = {
         """,
         'default': 'W',
     },
-
-
+    'E044': {
+        'msg': 'Use [[ for non-POSIX comparisions',
+        'long_msg':
+        """
+        [ is the POSIX test operator, while [[ is the bash keyword
+        comparision operator.  Comparisons such as =~, < and > require
+        the use of [[.
+        """,
+        'default': 'E',
+    },
 }
 
 MESSAGES = {}

@@ -270,6 +270,17 @@ class TestBashateSamples(base.TestCase):
 
         self.assert_error_found('E040', 7)
 
+    def test_sample_E044(self):
+        test_files = ['bashate/tests/samples/E044_bad.sh']
+        self.run.check_files(test_files, False)
+
+        self.assert_error_found('E044', 3)
+        self.assert_error_found('E044', 7)
+        self.assert_error_found('E044', 17)
+        self.assert_error_found('E044', 21)
+        self.assert_error_found('E044', 31)
+        self.assert_error_found('E044', 35)
+
     def test_sample_warning(self):
         # reuse a couple of the above files to make sure we turn
         # errors down to warnings if requested

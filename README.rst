@@ -10,9 +10,9 @@ projects. It started from humble beginnings in the DevStack project,
 and will continue to evolve over time.
 
 - Free software: Apache license
-- Documentation: http://docs.openstack.org/developer/bashate
-- Source: http://git.openstack.org/cgit/openstack-dev/bashate
-- Bugs: http://bugs.launchpad.net/bash8
+- Documentation: https://docs.openstack.org/bashate
+- Source: https://git.openstack.org/cgit/openstack-dev/bashate
+- Bugs: https://bugs.launchpad.net/bash8
 
 Currently Supported Checks
 --------------------------

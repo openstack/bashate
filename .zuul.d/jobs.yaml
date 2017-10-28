@@ -10,7 +10,7 @@
 - job:
     name: bashate-devstack
     parent: legacy-base
-    run: playbooks/legacy/bashate-devstack/run
+    run: playbooks/legacy/bashate-devstack/run.yaml
     timeout: 3600
     required-projects:
       - openstack/requirements
@@ -20,8 +20,8 @@
 - job:
     name: bashate-python36-fedora-26
     parent: legacy-base
-    run: playbooks/legacy/bashate-python36-fedora-26/run
-    post-run: playbooks/legacy/bashate-python36-fedora-26/post
+    run: playbooks/legacy/bashate-python36-fedora-26/run.yaml
+    post-run: playbooks/legacy/bashate-python36-fedora-26/post.yaml
     timeout: 2400
     nodeset: legacy-fedora-26
     required-projects:

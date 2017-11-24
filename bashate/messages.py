@@ -78,7 +78,7 @@ _messages = {
         'default': 'E'
     },
     'E005': {
-        'msg': 'File does not begin with #! or have .sh prefix',
+        'msg': 'File does not begin with #! or have .sh suffix',
         'long_msg':
         """
         This can be useful for tools that use either the interpreter

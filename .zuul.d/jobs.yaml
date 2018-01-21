@@ -1,10 +1,9 @@
 - project:
-    name: openstack-dev/bashate
     check:
       jobs:
         - bashate-devstack:
             voting: false
-        - bashate-python36-fedora-26:
+        - bashate-tox-py36-fedora-26:
             voting: false
 
 - job:
@@ -18,11 +17,8 @@
       - openstack-infra/devstack-gate
 
 - job:
-    name: bashate-python36-fedora-26
-    parent: legacy-base
-    run: playbooks/legacy/bashate-python36-fedora-26/run.yaml
-    post-run: playbooks/legacy/bashate-python36-fedora-26/post.yaml
-    timeout: 2400
-    nodeset: legacy-fedora-26
-    required-projects:
-      - openstack/requirements
+    name: bashate-tox-py36-fedora-26
+    parent: tox
+    vars:
+      tox_envlist: py36
+    nodeset: fedora-26

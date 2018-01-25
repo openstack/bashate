@@ -3,7 +3,7 @@
       jobs:
         - bashate-devstack:
             voting: false
-        - bashate-tox-py36-fedora-26:
+        - openstack-tox-py36:
             voting: false
 
 - job:
@@ -16,9 +16,3 @@
       - openstack-dev/devstack
       - openstack-infra/devstack-gate
 
-- job:
-    name: bashate-tox-py36-fedora-26
-    parent: tox
-    vars:
-      tox_envlist: py36
-    nodeset: fedora-26

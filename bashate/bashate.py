@@ -18,6 +18,7 @@ import argparse
 import fileinput
 import os
 import re
+import shlex
 import subprocess
 import sys
 
@@ -151,6 +152,45 @@ def check_hashbang(line, filename, report):
     if (not filename.endswith(".sh") and not line.startswith("#!") and
        not os.path.basename(filename).startswith('.')):
             report.print_error(MESSAGES['E005'].msg, line)
+
+
+def check_conditional_expression(line, report):
+    # We're really starting to push the limits of what we can do without
+    # a complete bash syntax parser here.  For example
+    # > [[ $foo =~ " [ " ]] && [[ $bar =~ " ] " ]]
+    # would be valid but mess up a simple regex matcher for "[.*]".
+    # Let alone dealing with multiple-line-spanning etc...
+    #
+    # So we'll KISS and just look for simple, one line,
+    # > if [ $foo =~ "bar" ]; then
+    # type statements, which are the vast majority of typo errors.
+    #
+    # shlex is pretty helpful in getting us something we can walk to
+    # find this pattern.  It does however have issues with
+    # unterminated quotes on multi-line strings (e.g.)
+    #
+    # foo="bar   <-- we only see this bit in "line"
+    #  baz"
+    #
+    # So we're just going to ignore parser failures here and move on.
+    # Possibly in the future we could pull such multi-line strings
+    # into "logical_line" below, and pass that here and have shlex
+    # break that up.
+    try:
+        toks = shlex.shlex(line)
+        toks.wordchars = "[]=~"
+        toks = list(toks)
+    except ValueError:
+        return
+
+    in_single_bracket = False
+    for tok in toks:
+        if tok == '[':
+            in_single_bracket = True
+        elif tok in ('=~', '<', '>') and in_single_bracket:
+            report.print_error(MESSAGES['E044'].msg, line)
+        elif tok == ']':
+            in_single_bracket = False
 
 
 def check_syntax(filename, report):
@@ -364,6 +404,7 @@ class BashateRun(object):
                     check_arithmetic(line, report)
                     check_local_subshell(line, report)
                     check_bare_arithmetic(line, report)
+                    check_conditional_expression(line, report)
 
         # finished processing the file
 

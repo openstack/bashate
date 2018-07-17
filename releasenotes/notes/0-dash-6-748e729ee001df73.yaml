@@ -1,0 +1,8 @@
+---
+features:
+  - Python 3.6 support added
+  - Hidden files such as ``.bashrc`` are no longer checked for ``#!`` (E005)
+  - A basic check for ``[[`` when using non-POSIX comparisions such as
+    ``=~`` is added
+  - Enable bashate to be called as a module ``python -m bashate ...``
+  - Enable `pre-commit.com <https://pre-commit.com>`__ support

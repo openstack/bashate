@@ -9,6 +9,10 @@ to fill the same part of code review that pep8 does in most OpenStack
 projects. It started from humble beginnings in the DevStack project,
 and will continue to evolve over time.
 
+The output format aims to follow `pycodestyle (pep8) default output format
+<https://github.com/PyCQA/pycodestyle/blob/master/pycodestyle.py#L108>`_.
+
+
 - Free software: Apache license
 - Documentation: https://docs.openstack.org/bashate
 - Source: https://git.openstack.org/cgit/openstack-dev/bashate

@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Adoped pycodestyle/pep8 default output format.

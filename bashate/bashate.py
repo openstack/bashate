@@ -296,11 +296,14 @@ class BashateRun(object):
         self.log_error(error, line, filename, filelineno, warn)
 
     def log_error(self, error, line, filename, filelineno, warn=False):
-        print("[%(warn)s] %(error)s: '%(line)s'" %
-              {'warn': "W" if warn else "E",
-               'error': error,
+        # following pycodestyle/pep8 default output format
+        # https://github.com/PyCQA/pycodestyle/blob/master/pycodestyle.py#L108
+        print("%(filename)s:%(filelineno)s:1: %(error)s" %
+              {'filename': filename,
+               'filelineno': filelineno,
+               'warn': "W" if warn else "E",
+               'error': error.replace(":", "", 1),
                'line': line.rstrip('\n')})
-        print(" - %s : L%s" % (filename, filelineno))
 
     def check_files(self, files, verbose):
         logical_line = ""

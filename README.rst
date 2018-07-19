@@ -56,8 +56,3 @@ not be used
 - E042: local declaration hides errors
 - E043: arithmetic compound has inconsistent return semantics
 - E044: Use [[ for =~,<,> comparisions
-
-See also
-~~~~~~~~
-
-See also :doc:`/man/bashate`.

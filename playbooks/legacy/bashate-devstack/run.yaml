@@ -18,7 +18,7 @@
           cd $WORKSPACE
 
           /usr/zuul-env/bin/zuul-cloner --cache-dir /opt/git \
-            git://git.openstack.org \
+            https://git.openstack.org \
             openstack-dev/bashate \
             openstack-dev/devstack \
             openstack-infra/devstack-gate

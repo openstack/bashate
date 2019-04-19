@@ -17,6 +17,6 @@
     timeout: 3600
     required-projects:
       - openstack/requirements
-      - openstack-dev/devstack
-      - openstack-infra/devstack-gate
+      - openstack/devstack
+      - openstack/devstack-gate
 

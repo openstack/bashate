@@ -18,18 +18,18 @@
           cd $WORKSPACE
 
           /usr/zuul-env/bin/zuul-cloner --cache-dir /opt/git \
-            https://git.openstack.org \
-            openstack-dev/bashate \
-            openstack-dev/devstack \
-            openstack-infra/devstack-gate
+            https://opendev.org \
+            openstack/bashate \
+            openstack/devstack \
+            openstack/devstack-gate
 
-          export BASHATE_INSTALL_PATH=$WORKSPACE/openstack-dev/bashate
+          export BASHATE_INSTALL_PATH=$WORKSPACE/openstack/bashate
 
-          pushd openstack-dev/devstack
+          pushd openstack/devstack
           tox -e bashate
           popd
 
-          pushd openstack-infra/devstack-gate
+          pushd openstack/devstack-gate
           tox -e bashate
           popd
         executable: /bin/bash

@@ -15,7 +15,7 @@ The output format aims to follow `pycodestyle (pep8) default output format
 
 - Free software: Apache license
 - Documentation: https://docs.openstack.org/bashate
-- Source: https://git.openstack.org/cgit/openstack-dev/bashate
+- Source: https://opendev.org/openstack/bashate/
 - Bugs: https://bugs.launchpad.net/bash8
 
 Currently Supported Checks

@@ -149,9 +149,12 @@ def check_local_subshell(line, report):
 def check_hashbang(line, filename, report):
     # this check only runs on the first line
     #  maybe this should check for shell?
-    if (not filename.endswith(".sh") and not line.startswith("#!") and
-       not os.path.basename(filename).startswith('.')):
-            report.print_error(MESSAGES['E005'].msg, line)
+    if (
+        not filename.endswith(".sh") and
+        not line.startswith("#!") and
+        not os.path.basename(filename).startswith('.')
+    ):
+        report.print_error(MESSAGES['E005'].msg, line)
 
 
 def check_conditional_expression(line, report):
@@ -462,6 +465,7 @@ def main(args=None):
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

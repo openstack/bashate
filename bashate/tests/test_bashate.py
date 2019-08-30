@@ -64,8 +64,11 @@ class TestBashate(base.TestCase):
 
         result = bashate.main(['--verbose',
                                '/path/to/fileA', '/path/to/fileB'])
-        m_run_obj.check_files.assert_called_with(['/path/to/fileA',
-                                                  '/path/to/fileB'], True)
+        m_run_obj.check_files.assert_called_with(
+            ['/path/to/fileA', '/path/to/fileB'],
+            True,
+            79
+        )
         expected_return = 1
         self.assertEqual(expected_return, result)
 
@@ -175,6 +178,14 @@ class TestBashateSamples(base.TestCase):
         self.assert_error_found('E006', 5)
         self.assert_error_found('E006', 6)
         self.assert_error_found('E006', 8)
+
+    def test_sample_E006_bad_custom_max_line_length(self):
+        test_files = ['bashate/tests/samples/E006_bad_custom_length.sh']
+        self.run.check_files(test_files, False, 10)
+
+        self.assertEqual(self.run.warning_count, 2)
+        self.assert_error_found('E006', 5)
+        self.assert_error_found('E006', 6)
 
     def test_sample_E006_good(self):
         test_files = ['bashate/tests/samples/E006_good.sh']

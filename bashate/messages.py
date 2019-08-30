@@ -93,11 +93,11 @@ _messages = {
         'long_msg':
         """
         This check mimics the widely accepted convention from PEP8 and
-        many other places that lines longer than 79 columns can not
-        only cause problems when reading/writing code, but also often
-        indicates a bad smell, e.g. too many levels of indentation due
-        to overly complex functions which require refactoring into
-        smaller chunks.
+        many other places that lines longer than a standard terminal width
+        (default=79 columns) can not only cause problems when reading/writing
+        code, but also often indicates a bad smell, e.g. too many levels
+        of indentation due to overly complex functions which require
+        refactoring into smaller chunks.
         """,
         'default': 'W'
     },

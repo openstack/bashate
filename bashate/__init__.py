@@ -14,4 +14,4 @@ import pbr.version
 
 
 __version__ = pbr.version.VersionInfo(
-    'bashate').version_string()
+    'bashate').version_string_with_vcs()

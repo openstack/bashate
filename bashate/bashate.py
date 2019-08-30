@@ -22,6 +22,7 @@ import shlex
 import subprocess
 import sys
 
+import bashate
 from bashate import messages
 
 MESSAGES = messages.MESSAGES
@@ -431,8 +432,15 @@ def main(args=None):
     parser.add_argument('-e', '--error',
                         help='Rules to always error (rather than warn)')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
+    parser.add_argument('--version', action='store_true',
+                        help='show bashate version number and exit',
+                        default=False)
     parser.add_argument('-s', '--show', action='store_true', default=False)
     opts = parser.parse_args(args)
+
+    if opts.version:
+        print("bashate: %s" % bashate.__version__)
+        sys.exit(0)
 
     if opts.show:
         messages.print_messages()

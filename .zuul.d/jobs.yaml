@@ -11,11 +11,6 @@
 
 - job:
     name: bashate-devstack
-    parent: legacy-base
-    run: playbooks/legacy/bashate-devstack/run.yaml
-    timeout: 3600
+    run: playbooks/bashate-devstack-master/run.yaml
     required-projects:
-      - openstack/requirements
       - openstack/devstack
-      - openstack/devstack-gate
-

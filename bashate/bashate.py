@@ -59,8 +59,8 @@ def check_no_trailing_whitespace(line, report):
         report.print_error(MESSAGES['E001'].msg, line)
 
 
-def check_no_long_lines(line, report):
-    if len(line.rstrip("\r\n")) > 79:
+def check_no_long_lines(line, report, max_line_length):
+    if len(line.rstrip("\r\n")) > max_line_length:
         report.print_error(MESSAGES['E006'].msg, line)
 
 
@@ -306,7 +306,7 @@ class BashateRun(object):
                'error': error.replace(":", "", 1),
                'line': line.rstrip('\n')})
 
-    def check_files(self, files, verbose):
+    def check_files(self, files, verbose, max_line_length=79):
         logical_line = ""
         token = False
 
@@ -401,7 +401,7 @@ class BashateRun(object):
                 # separatley.  Stick with what works...
                 for line in logical_line:
                     check_no_trailing_whitespace(line, report)
-                    check_no_long_lines(line, report)
+                    check_no_long_lines(line, report, max_line_length)
                     check_for_do(line, report)
                     check_if_then(line, report)
                     check_function_decl(line, report)
@@ -431,6 +431,8 @@ def main(args=None):
                         help='Rules to always warn (rather than error)')
     parser.add_argument('-e', '--error',
                         help='Rules to always error (rather than warn)')
+    parser.add_argument('--max-line-length', default=79, type=int,
+                        help='Max line length')
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
     parser.add_argument('--version', action='store_true',
                         help='show bashate version number and exit',
@@ -457,7 +459,7 @@ def main(args=None):
     run.register_errors(opts.error)
 
     try:
-        run.check_files(files, opts.verbose)
+        run.check_files(files, opts.verbose, opts.max_line_length)
     except IOError as e:
         print("bashate: %s" % e)
         return 1

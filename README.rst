@@ -17,6 +17,8 @@ The output format aims to follow `pycodestyle (pep8) default output format
 - Documentation: https://docs.openstack.org/bashate
 - Source: https://opendev.org/openstack/bashate/
 - Bugs: https://bugs.launchpad.net/bash8
+- Release notes: https://docs.openstack.org/releasenotes/bashate/index.html
+- Contributing: https://docs.openstack.org/bashate/latest/contributor/index.html
 
 Currently Supported Checks
 --------------------------

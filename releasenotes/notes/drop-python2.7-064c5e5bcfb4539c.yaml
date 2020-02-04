@@ -1,0 +1,4 @@
+---
+deprecations:
+  - |
+    bashate is now Python 3 only and no longer supports Python 2.

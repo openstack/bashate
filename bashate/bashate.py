@@ -29,33 +29,33 @@ MESSAGES = messages.MESSAGES
 
 
 def is_continuation(line):
-    return re.search('\\\\\s*$', line)
+    return re.search(r'\\\s*$', line)
 
 
 def check_for_do(line, report):
     if not is_continuation(line):
-        match = re.match('^\s*(for|while|until)\s', line)
+        match = re.match(r'^\s*(for|while|until)\s', line)
         if match:
             operator = match.group(1).strip()
             if operator == "for":
                 # "for i in ..." and "for ((" is bash, but
                 # "for (" is likely from an embedded awk script,
                 # so skip it
-                if re.search('for \([^\(]', line):
+                if re.search(r'for \([^\(]', line):
                     return
-            if not re.search(';\s*do$', line):
+            if not re.search(r';\s*do$', line):
                 report.print_error((MESSAGES['E010'].msg % operator), line)
 
 
 def check_if_then(line, report):
     if not is_continuation(line):
-        if re.search('^\s*(el)?if \[', line):
-            if not re.search(';\s*then$', line):
+        if re.search(r'^\s*(el)?if \[', line):
+            if not re.search(r';\s*then$', line):
                 report.print_error(MESSAGES['E011'].msg, line)
 
 
 def check_no_trailing_whitespace(line, report):
-    if re.search('[ \t]+$', line):
+    if re.search(r'[ \t]+$', line):
         report.print_error(MESSAGES['E001'].msg, line)
 
 
@@ -74,7 +74,7 @@ def check_indents(logical_line, report):
 
     # Find the offset of the first argument of the command (if it has
     # one)
-    m = re.search('^(?P<indent>[ \t]+)?(?P<cmd>\S+)(?P<ws>\s+)(?P<arg>\S+)',
+    m = re.search(r'^(?P<indent>[ \t]+)?(?P<cmd>\S+)(?P<ws>\s+)(?P<arg>\S+)',
                   logical_line[0])
     arg_offset = None
     if m:
@@ -83,10 +83,10 @@ def check_indents(logical_line, report):
 
     # go through each line
     for lineno, line in enumerate(logical_line):
-        m = re.search('^(?P<indent>[ \t]+)', line)
+        m = re.search(r'^(?P<indent>[ \t]+)', line)
         if m:
             # no tabs, only spaces
-            if re.search('\t', m.group('indent')):
+            if re.search(r'\t', m.group('indent')):
                 report.print_error(MESSAGES['E002'].msg, line)
 
             offset = len(m.group('indent'))
@@ -106,12 +106,12 @@ def check_indents(logical_line, report):
 def check_function_decl(line, report):
     failed = False
     if line.startswith("function"):
-        if not re.search('^function [\w-]* \{$', line):
+        if not re.search(r'^function [\w-]* \{$', line):
             failed = True
     else:
         # catch the case without "function", e.g.
         # things like '^foo() {'
-        if re.search('^\s*?\(\)\s*?\{', line):
+        if re.search(r'^\s*?\(\)\s*?\{', line):
             failed = True
 
     if failed:
@@ -121,12 +121,12 @@ def check_function_decl(line, report):
 def starts_heredoc(line):
     # note, watch out for <<EOF and <<'EOF' ; quotes in the
     # deliminator are part of syntax
-    m = re.search("[^<]<<\s*([\'\"]?)(?P<token>\w+)([\'\"]?)", line)
+    m = re.search(r"[^<]<<\s*([\'\"]?)(?P<token>\w+)([\'\"]?)", line)
     return m.group('token') if m else False
 
 
 def end_of_heredoc(line, token):
-    return token and re.search("^%s\s*$" % token, line)
+    return token and re.search(r"^%s\s*$" % token, line)
 
 
 def check_arithmetic(line, report):
@@ -152,7 +152,7 @@ def check_hashbang(line, filename, report):
     #  maybe this should check for shell?
     if (not filename.endswith(".sh") and not line.startswith("#!") and
        not os.path.basename(filename).startswith('.')):
-            report.print_error(MESSAGES['E005'].msg, line)
+        report.print_error(MESSAGES['E005'].msg, line)
 
 
 def check_conditional_expression(line, report):
@@ -472,6 +472,7 @@ def main(args=None):
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

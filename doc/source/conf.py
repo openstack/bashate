@@ -48,12 +48,12 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 # openstackdocstheme options
-repository_name = 'openstack-dev/bashate'
-bug_project = 'bashate'
-bug_tag = ''
+openstackdocs_repo_name = 'openstack-dev/bashate'
+openstackdocs_bug_project = 'bashate'
+openstackdocs_bug_tag = ''
 
 # Grouping the document tree for man pages.
 # List of tuples 'sourcefile', 'target', u'title', u'Authors name', 'manual'

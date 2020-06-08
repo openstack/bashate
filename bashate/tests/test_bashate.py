@@ -17,7 +17,7 @@ test_bashate
 Tests for `bashate` module.
 """
 
-import mock
+from unittest import mock
 
 from bashate import bashate
 from bashate import messages

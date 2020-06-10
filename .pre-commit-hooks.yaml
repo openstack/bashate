@@ -9,4 +9,3 @@
     entry: bashate
     language: python
     types: [shell]
-    verbose: true

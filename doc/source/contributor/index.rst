@@ -1,4 +1,8 @@
 ============
 Contributing
 ============
-.. include:: ./contributing.rst
+
+.. toctree::
+   :maxdepth: 2
+
+   contributing.rst

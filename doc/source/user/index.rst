@@ -2,9 +2,6 @@
 Using bashate
 =============
 
-
-Contents:
-
 .. toctree::
    :maxdepth: 2
 

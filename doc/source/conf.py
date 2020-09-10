@@ -54,6 +54,7 @@ pygments_style = 'native'
 openstackdocs_repo_name = 'openstack-dev/bashate'
 openstackdocs_bug_project = 'bashate'
 openstackdocs_bug_tag = ''
+openstackdocs_pdf_link = True
 
 # Grouping the document tree for man pages.
 # List of tuples 'sourcefile', 'target', u'title', u'Authors name', 'manual'
@@ -80,10 +81,14 @@ htmlhelp_basename = '%sdoc' % project
 # [howto/manual]).
 latex_documents = [
     ('index',
-     '%s.tex' % project,
-     u'%s Documentation' % project,
+     'doc-%s.tex' % project,
+     u'Bashate Documentation',
      u'Bashate Authors', 'manual'),
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.
 #intersphinx_mapping = {'http://docs.python.org/': None}
+latex_use_xindy = False
+latex_elements = {
+    'extraclassoptions': 'openany,oneside',
+}

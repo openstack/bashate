@@ -2,8 +2,6 @@
 Welcome to bashate's documentation!
 ===================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 

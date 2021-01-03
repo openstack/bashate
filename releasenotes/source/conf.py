@@ -55,8 +55,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Bashate Release Notes'
-copyright = u'2017, Bashate Developers'
+project = 'Bashate Release Notes'
+copyright = '2017, Bashate Developers'
 
 # Release notes are version independent
 # The full version, including alpha/beta/rc tags.
@@ -207,8 +207,8 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     ('index', 'BashateReleaseNotes.tex',
-     u'Bashate Release Notes Documentation',
-     u'Bashate Developers', 'manual'),
+     'Bashate Release Notes Documentation',
+     'Bashate Developers', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -237,8 +237,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'bashatereleasenotes', u'Bashate Release Notes Documentation',
-     [u'Bashate Developers'], 1)
+    ('index', 'bashatereleasenotes', 'Bashate Release Notes Documentation',
+     ['Bashate Developers'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -251,8 +251,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'BashateReleaseNotes', u'Bashate Release Notes Documentation',
-     u'Bashate Developers', 'BashateReleaseNotes',
+    ('index', 'BashateReleaseNotes', 'Bashate Release Notes Documentation',
+     'Bashate Developers', 'BashateReleaseNotes',
      'Style Checker for Bash.',
      'Miscellaneous'),
 ]

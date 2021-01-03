@@ -37,8 +37,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'bashate'
-copyright = u'2017, Bashate Authors'
+project = 'bashate'
+copyright = '2017, Bashate Authors'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -57,10 +57,10 @@ openstackdocs_bug_tag = ''
 openstackdocs_pdf_link = True
 
 # Grouping the document tree for man pages.
-# List of tuples 'sourcefile', 'target', u'title', u'Authors name', 'manual'
+# List of tuples 'sourcefile', 'target', 'title', 'Authors name', 'manual'
 man_pages = [
-    ('man/bashate', 'bashate', u'Style checker for bash scripts',
-     [u'OpenStack Foundation'], 1),
+    ('man/bashate', 'bashate', 'Style checker for bash scripts',
+     ['OpenStack Foundation'], 1),
 ]
 
 
@@ -82,8 +82,8 @@ htmlhelp_basename = '%sdoc' % project
 latex_documents = [
     ('index',
      'doc-%s.tex' % project,
-     u'Bashate Documentation',
-     u'Bashate Authors', 'manual'),
+     'Bashate Documentation',
+     'Bashate Authors', 'manual'),
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.

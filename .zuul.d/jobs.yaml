@@ -6,8 +6,10 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - bashate-devstack:
-            voting: false
+        - bashate-devstack
+    gate:
+      jobs:
+        - bashate-devstack
 
 - job:
     name: bashate-devstack

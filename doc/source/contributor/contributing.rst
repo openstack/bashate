@@ -13,7 +13,7 @@ with Bashate.
 
 Communication
 ~~~~~~~~~~~~~
-* IRC channel ``#openstack-qa`` at FreeNode
+* IRC channel ``#openstack-qa`` at OFTC
 * Mailing list (prefix subjects with ``[qa]`` for faster responses)
   http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-discuss
 

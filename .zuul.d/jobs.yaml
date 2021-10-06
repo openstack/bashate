@@ -1,7 +1,7 @@
 - project:
     templates:
       - openstack-python35-jobs
-      - openstack-python3-xena-jobs
+      - openstack-python3-yoga-jobs
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
     check:

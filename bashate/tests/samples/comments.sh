@@ -21,6 +21,10 @@ fi
 
 # ``RST style comment``
 
- # ``indented comment``
+ # ``indented comment`` (E003)
+
+    # ``indented comment`` (4 spaces, ok)
+
+	# ``indented comment`` (tab, E002)
 
 #	tab comment

@@ -334,6 +334,8 @@ class BashateRun(object):
                 # inside a heredoc this might be part of the syntax of
                 # an embedded script, just ignore that)
                 if line.lstrip().startswith('#') and not in_heredoc:
+                    logical_line = [line]
+                    check_indents(logical_line, report)
                     continue
 
                 # Strip trailing comments. From bash:

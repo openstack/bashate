@@ -260,7 +260,10 @@ class TestBashateSamples(base.TestCase):
         test_files = ['bashate/tests/samples/comments.sh']
         self.run.check_files(test_files, False)
 
-        self.assertEqual(0, self.run.error_count)
+        self.assert_error_found('E003', 24)
+        self.assert_error_found('E002', 28)
+        self.assert_error_found('E003', 28)
+        self.assertEqual(3, self.run.error_count)
 
     def test_sample_E005(self):
         test_files = ['bashate/tests/samples/E005_bad']

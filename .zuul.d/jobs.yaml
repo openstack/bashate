@@ -10,8 +10,7 @@
         - openstack-tox-py37
         - openstack-tox-py38
         - openstack-tox-py39
-        - openstack-tox-py310:
-            voting: false
+        - openstack-tox-py310
         - bashate-devstack
     gate:
       jobs:
@@ -20,6 +19,7 @@
         - openstack-tox-py37
         - openstack-tox-py38
         - openstack-tox-py39
+        - openstack-tox-py310
         - bashate-devstack
 
 - job:

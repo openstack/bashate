@@ -300,9 +300,7 @@ class BashateRun(object):
         print("%(filename)s:%(filelineno)s:1: %(error)s" %
               {'filename': filename,
                'filelineno': filelineno,
-               'warn': "W" if warn else "E",
-               'error': error.replace(":", "", 1),
-               'line': line.rstrip('\n')})
+               'error': error.replace(":", "", 1)})
 
     def check_files(self, files, verbose, max_line_length=79):
         logical_line = ""

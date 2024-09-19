@@ -235,6 +235,6 @@ def print_messages():
             'id': v.msg_id,
             'string': v.msg_str})
         if v.long_msg:
-            for l in v.long_msg.split('\n'):
-                print("            %s" % l)
+            for msg_line in v.long_msg.split('\n'):
+                print("            %s" % msg_line)
         print("")

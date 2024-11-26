@@ -1,27 +1,23 @@
 - project:
     templates:
-      - openstack-python35-jobs
+      - openstack-python3-jobs
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
     check:
       jobs:
         - openstack-tox-pep8
-        - openstack-tox-py36
-        - openstack-tox-py37
-        - openstack-tox-py38
         - openstack-tox-py39
         - openstack-tox-py310
         - openstack-tox-py311
+        - openstack-tox-py312
         - bashate-devstack
     gate:
       jobs:
         - openstack-tox-pep8
-        - openstack-tox-py36
-        - openstack-tox-py37
-        - openstack-tox-py38
         - openstack-tox-py39
         - openstack-tox-py310
         - openstack-tox-py311
+        - openstack-tox-py312
         - bashate-devstack
 
 - job:

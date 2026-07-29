@@ -320,7 +320,18 @@ class BashateRun(object):
             # syntax errors when you try to run them.
             check_syntax(fname, report)
 
+            # Remember the last raw line of this file (and where it
+            # was) so we can check it for a trailing newline once the
+            # file is exhausted.  "line" itself is unusable for that:
+            # it gets rewritten by inline-comment stripping and by the
+            # logical_line loop below.
+            last_line = None
+            last_lineno = None
+
             for line in fileinput.input(fname):
+                last_line = line
+                last_lineno = fileinput.filelineno()
+
                 if fileinput.isfirstline():
 
                     check_hashbang(line, fileinput.filename(), report)
@@ -408,11 +419,17 @@ class BashateRun(object):
                     check_bare_arithmetic(line, report)
                     check_conditional_expression(line, report)
 
-        # finished processing the file
+            # finished processing the file
 
-        # last line should always end with a newline
-        if not line.endswith('\n'):
-            report.print_error(MESSAGES['E004'].msg, line)
+            # last line should always end with a newline.  Note this
+            # must be inside the "for fname in files" loop: checking
+            # it after all files have been processed only ever
+            # examines whichever file happened to be scanned last.
+            # Pass filename/filelineno explicitly because fileinput
+            # has been exhausted by now and no longer reports them.
+            if last_line is not None and not last_line.endswith('\n'):
+                report.print_error(MESSAGES['E004'].msg, last_line,
+                                   filename=fname, filelineno=last_lineno)
 
 
 def main(args=None):

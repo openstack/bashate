@@ -1,0 +1,14 @@
+---
+fixes:
+  - |
+    ``E004`` (file did not end with a newline) is now checked once per
+    file, rather than once per ``bashate`` invocation.  Previously the
+    check ran after every file had been processed, so only whichever
+    file happened to be scanned last was examined; a file missing its
+    trailing newline went unreported whenever another file followed it
+    on the command line.
+
+    This particularly affected callers that batch files into a single
+    invocation, such as `pre-commit.com <https://pre-commit.com>`__,
+    where the same offending file could pass or fail depending only on
+    how the file list happened to be ordered.

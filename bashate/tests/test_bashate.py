@@ -160,6 +160,36 @@ class TestBashateSamples(base.TestCase):
         self.run.check_files(test_files, False)
         self.assert_error_found('E004', 3)
 
+    def test_sample_E004_bad_multiple_files(self):
+        # E004 must be reported for every offending file, not just
+        # whichever one happens to be scanned last.
+        test_files = ['bashate/tests/samples/E004_bad.sh',
+                      'bashate/tests/samples/E004_bad2.sh']
+        self.run.check_files(test_files, False)
+        self.assert_error_found('E004', 3)
+        self.assertEqual(2, self.run.error_count)
+
+    def test_sample_E004_bad_followed_by_good(self):
+        # A file missing its trailing newline must still be reported
+        # when a well-formed file is scanned after it.
+        test_files = ['bashate/tests/samples/E004_bad.sh',
+                      'bashate/tests/samples/E003_good.sh']
+        self.run.check_files(test_files, False)
+        self.assert_error_found('E004', 3)
+        self.assertEqual(1, self.run.error_count)
+
+    def test_sample_E004_good_not_flagged(self):
+        # A file that does end with a newline must not be flagged,
+        # even when scanned after one that does not.
+        test_files = ['bashate/tests/samples/E004_bad.sh',
+                      'bashate/tests/samples/E003_good.sh']
+        self.run.check_files(test_files, False)
+        for call in self.m_log_error.call_args_list:
+            args = call[0]
+            if args[0].startswith('E004'):
+                self.assertEqual('bashate/tests/samples/E004_bad.sh',
+                                 args[2])
+
     def test_sample_E006_bad(self):
         test_files = ['bashate/tests/samples/E006_bad.sh']
         self.run.check_files(test_files, False)

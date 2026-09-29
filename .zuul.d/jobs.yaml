@@ -10,6 +10,8 @@
         - openstack-tox-py310
         - openstack-tox-py311
         - openstack-tox-py312
+        - openstack-tox-py313
+        - openstack-tox-py314
         - bashate-devstack
     gate:
       jobs:
@@ -18,6 +20,8 @@
         - openstack-tox-py310
         - openstack-tox-py311
         - openstack-tox-py312
+        - openstack-tox-py313
+        - openstack-tox-py314
         - bashate-devstack
 
 - job:
